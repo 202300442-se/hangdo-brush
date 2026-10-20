@@ -2,8 +2,8 @@
 
 ## 마감 / 제출
 - 제출 마감: 2026-10-21(수) 오전 11:59 KST
-- 제출물: GitHub 저장소 URL — https://github.com/sieun-ops/hangdo-brush
-- 공개 URL (README에 기재): https://sieun-ops.github.io/hangdo-brush/
+- 제출물: GitHub 저장소 URL — https://github.com/202300442-se/hangdo-brush
+- 공개 URL (README에 기재): https://202300442-se.github.io/hangdo-brush/
 - 목표: 마감 2시간 전(10:00)까지 최종 배포 확인
 
 ## 평가 기준 → 대응

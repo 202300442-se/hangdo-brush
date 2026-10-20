@@ -3,7 +3,7 @@
 ## 문서
 - 전체 기획: docs/MASTER_BRIEF.md
 - 중간고사 실행 계획(우선): docs/PLAN.md — 마감 2026-10-21 11:59 KST
-- 저장소: sieun-ops/hangdo-brush → https://sieun-ops.github.io/hangdo-brush/
+- 저장소: 202300442-se/hangdo-brush → https://202300442-se.github.io/hangdo-brush/
 
 ## 우선순위
 중간고사 핵심 흐름(홈 → AI 개발 의뢰서 → 결과 → 의뢰서 복사·전달)이 끝까지 작동하는 것이 최우선. 장식·부가 기능 때문에 이를 희생하지 않는다.

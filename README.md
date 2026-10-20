@@ -29,9 +29,9 @@
 
 ## 3. 공개 주소
 
-- 서비스: **https://sieun-ops.github.io/hangdo-brush/**
-- 핵심 기능 바로가기: https://sieun-ops.github.io/hangdo-brush/finder/
-- 저장소: https://github.com/sieun-ops/hangdo-brush
+- 서비스: **https://202300442-se.github.io/hangdo-brush/**
+- 핵심 기능 바로가기: https://202300442-se.github.io/hangdo-brush/finder/
+- 저장소: https://github.com/202300442-se/hangdo-brush
 
 ## 4. 사용법
 
