@@ -11,17 +11,28 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [atTop, setAtTop] = useState(true);
+  const [hidden, setHidden] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const isHome = pathname === "/" || pathname === "";
 
   // 홈 첫 화면에서는 영상 위에 투명하게 겹치고, 스크롤하면 흰 배경으로 바뀐다.
+  // 아래로 스크롤하면 숨고, 위로 스크롤하면 다시 나타난다 (메뉴가 열려 있거나 초점이 헤더 안에 있으면 숨기지 않음).
   useEffect(() => {
-    const onScroll = () => setAtTop(window.scrollY < 40);
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setAtTop(y < 40);
+      const headerHasFocus = document.activeElement?.closest(".site-header") != null;
+      if (y > 240 && y > lastY + 4 && !headerHasFocus) setHidden(true);
+      else if (y < lastY - 4 || y <= 240) setHidden(false);
+      lastY = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const overlay = isHome && atTop && !open;
+  const isHidden = hidden && !open;
 
   // 페이지 이동 시 모바일 메뉴 닫기
   useEffect(() => setOpen(false), [pathname]);
@@ -42,7 +53,10 @@ export function Header() {
   const isActive = (href: string) => pathname?.startsWith(href.replace(/\/$/, ""));
 
   return (
-    <header className={`site-header${overlay ? " site-header--overlay on-dark" : ""}`}>
+    <header
+      className={`site-header${overlay ? " site-header--overlay on-dark" : ""}${isHidden ? " site-header--hidden" : ""}`}
+      onFocus={() => setHidden(false)}
+    >
       <div className="container site-header__inner">
         <Link href="/" className="brand" aria-label={`${company.nameKo} 홈`}>
           <Logo inverse={overlay} />

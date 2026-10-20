@@ -185,7 +185,7 @@
   position: relative;
   display: block;
   aspect-ratio: 4 / 3;
-  overflow: hidden;
+  overflow: clip;
   color: var(--white);
   text-decoration: none;
   background: var(--charcoal);
@@ -570,4 +570,37 @@
 }
 .hero__scroll {
   z-index: 2;
+}
+
+/* 대형 문구 띠 */
+.marquee {
+  overflow: clip;
+  padding-block: clamp(2.5rem, 6vw, 6rem);
+  background: var(--black);
+  color: var(--white);
+}
+.marquee__track {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  width: max-content;
+  font-size: clamp(3rem, 1rem + 9vw, 10rem);
+  font-weight: var(--fw-black);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.marquee__track span {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(255 255 255 / 0.4);
+}
+.marquee__track span:first-child,
+.marquee__track span:nth-child(5) {
+  color: var(--white);
+  -webkit-text-stroke: 0;
+}
+.marquee__track .marquee__dot {
+  font-size: 0.25em;
+  color: var(--green-logo);
+  -webkit-text-stroke: 0;
 }

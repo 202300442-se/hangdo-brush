@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
+import { MaterialChips } from "@/components/MaterialChips";
+import { SplitWords } from "@/components/SplitWords";
 import { Photo } from "@/components/Photo";
 import { brushTypes } from "@/data/brushTypes";
 import { company } from "@/data/company";
 import { materials } from "@/data/materials";
+import "@/styles/glass.css";
 import "@/styles/home.css";
 import "@/styles/pages.css";
 
@@ -86,10 +89,9 @@ export default function Home() {
         <div className="container panel__inner reveal">
           <p className="eyebrow">찾아오시는 길</p>
           <h2 id="location-title" className="h1">
-            부산 강서구 대저동,
-            <br />
-            공장에서 직접 만납니다.
+            <SplitWords lines={["설계부터 제작까지,", "한 공장에서 완성합니다."]} />
           </h2>
+          <p className="lead">항도제일특수브러쉬의 브러쉬는 부산 강서구 대저동 공장에서 설계되고 만들어집니다.</p>
           <dl className="loc-list">
             <div>
               <dt>주소</dt>
@@ -121,14 +123,12 @@ export default function Home() {
         <div className="container">
           <div className="inquiry__head reveal">
             <p className="eyebrow">제작문의</p>
-            <h2 id="inquiry-title" className="h1 scroll-ink">
-              어떤 브러쉬가 필요한지
-              <br />
-              몰라도 괜찮습니다.
+            <h2 id="inquiry-title" className="h1">
+              <SplitWords lines={["어떤 브러쉬가 필요한지", "몰라도 괜찮습니다."]} />
             </h2>
             <p className="lead">편한 방법을 골라 주세요. 전화는 바로 연결되고, AI 제작상담은 2분이면 의뢰서가 만들어집니다.</p>
           </div>
-          <div className="inquiry__options">
+          <div className="inquiry__options reveal">
             <a className="inquiry-option" href={`tel:${company.phone}`}>
               <span className="inquiry-option__label">전화로 바로 상담</span>
               <span className="inquiry-option__value">{company.phone}</span>
@@ -148,16 +148,16 @@ export default function Home() {
         <div className="container">
           <div className="band-head reveal">
             <p className="eyebrow">브러쉬·제품</p>
-            <h2 id="types-title" className="h2">
-              브러쉬 종류별 적용 분야
+            <h2 id="types-title" className="h1">
+              <SplitWords lines={["공정마다 다른 브러쉬,", "종류별 적용 분야"]} />
             </h2>
           </div>
           <ul role="list" className="type-grid">
             {brushTypes.map((t, i) => (
-              <li key={t.id} className="type-tile reveal">
+              <li key={t.id} className="type-tile reveal" style={{ ["--d" as string]: `${(i % 3) * 120}ms` }}>
                 <Link href={`/products/#${t.id}`} className="type-tile__link">
                   {t.photo ? (
-                    <span className="type-tile__media">
+                    <span className="type-tile__media type-tile__media--parallax">
                       <Photo id={t.photo} sizes="(min-width: 880px) 33vw, 100vw" decorative />
                     </span>
                   ) : (
@@ -175,6 +175,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 스크롤에 따라 흐르는 대형 문구 (장식) */}
+      <div className="marquee" aria-hidden="true" translate="no">
+        <div className="marquee__track">
+          <span>BRUSH SOLUTION COMPANY</span>
+          <span className="marquee__dot">●</span>
+          <span>SINCE 1995</span>
+          <span className="marquee__dot">●</span>
+          <span>MADE IN BUSAN, KOREA</span>
+          <span className="marquee__dot">●</span>
+          <span>BRUSH SOLUTION COMPANY</span>
+        </div>
+      </div>
+
       {/* 06 소재·기술 */}
       <section className="tech-band on-dark" aria-labelledby="tech-title">
         <div className="tech-band__media scroll-zoom-bg" aria-hidden="true">
@@ -183,15 +196,9 @@ export default function Home() {
         <div className="container tech-band__copy reveal">
           <p className="eyebrow">소재·기술</p>
           <h2 id="tech-title" className="h1">
-            소재는 공정을 보고 고르고,
-            <br />
-            자체 설비에서 직접 만듭니다.
+            <SplitWords lines={["소재는 공정을 보고 고르고,", "자체 설비에서 직접 만듭니다."]} />
           </h2>
-          <ul role="list" className="mat-chips">
-            {materials.map((m) => (
-              <li key={m.id}>{m.name}</li>
-            ))}
-          </ul>
+          <MaterialChips items={materials} />
           <Link href="/materials/" className="btn btn--light btn--lg">
             소재·기술 자세히 보기
           </Link>

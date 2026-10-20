@@ -1,0 +1,187 @@
+/* =========================================================
+   Glass material chips (iOS 글라스 느낌)
+   - 반투명 + 배경 흐림 + 위쪽 빛 반사 + 얇은 밝은 테두리
+   - 마우스·초점: 아래에서 물결이 차오르며 흰색으로 채워짐 (transform만 사용)
+   - 특징 상자: 같은 글라스 재질, 위로 떠오르며 나타남
+   ========================================================= */
+
+.glass-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  max-width: 760px;
+}
+.glass-chip-wrap {
+  position: relative;
+}
+
+.glass-chip {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 22px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0.06) 48%, rgb(255 255 255 / 0.1) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    inset 0 -1px 0 rgb(255 255 255 / 0.08),
+    0 10px 30px rgb(0 0 0 / 0.28);
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    transform 0.5s var(--ease-out),
+    border-color 0.4s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+}
+/* 위쪽 반사광 */
+.glass-chip::before {
+  content: "";
+  position: absolute;
+  inset: 1px 10% auto;
+  height: 45%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.35), rgb(255 255 255 / 0));
+  pointer-events: none;
+  z-index: 1;
+}
+/* 물결 채움 */
+.glass-chip__fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: translateY(105%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  background: rgb(255 255 255 / 0.94);
+}
+.glass-chip__fill svg {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 200%;
+  height: 10px;
+  fill: rgb(255 255 255 / 0.94);
+  animation: chip-wave 1.6s linear infinite;
+  animation-play-state: paused;
+}
+@keyframes chip-wave {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.glass-chip__label {
+  position: relative;
+  z-index: 2;
+  transition: color 0.45s var(--ease-out);
+}
+
+.glass-chip-wrap.is-open .glass-chip,
+.glass-chip:hover,
+.glass-chip:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgb(255 255 255 / 0.7);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 14px 36px rgb(0 0 0 / 0.35);
+}
+.glass-chip-wrap.is-open .glass-chip__fill,
+.glass-chip:hover .glass-chip__fill,
+.glass-chip:focus-visible .glass-chip__fill {
+  transform: translateY(0);
+}
+.glass-chip-wrap.is-open .glass-chip__fill svg,
+.glass-chip:hover .glass-chip__fill svg {
+  animation-play-state: running;
+}
+.glass-chip-wrap.is-open .glass-chip__label,
+.glass-chip:hover .glass-chip__label,
+.glass-chip:focus-visible .glass-chip__label {
+  color: var(--black);
+}
+.glass-chip:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+/* ---------- 특징 상자 ---------- */
+.glass-tip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: var(--tip-left, 0px);
+  z-index: 20;
+  display: grid;
+  gap: 6px;
+  width: min(300px, calc(100vw - 32px));
+  padding: 16px 18px 14px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgb(30 36 32 / 0.9), rgb(12 14 12 / 0.94));
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.25),
+    0 24px 60px rgb(0 0 0 / 0.45);
+  color: var(--white);
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.97);
+  transform-origin: bottom center;
+  transition:
+    opacity 0.35s var(--ease-out),
+    transform 0.45s var(--ease-out),
+    visibility 0s linear 0.45s;
+  pointer-events: none;
+}
+.glass-chip-wrap.is-open .glass-tip {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+  transform: none;
+}
+.glass-tip__group {
+  font-size: 0.7rem;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.14em;
+  color: var(--green-logo);
+}
+.glass-tip__name {
+  font-size: 1.15rem;
+  font-weight: var(--fw-black);
+  letter-spacing: -0.02em;
+}
+.glass-tip__traits {
+  display: grid;
+  gap: 4px;
+  margin-top: 2px;
+  padding-top: 10px;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.88);
+}
+.glass-tip__traits span::before {
+  content: "—";
+  margin-right: 8px;
+  color: var(--green-logo);
+}
+.glass-tip__note {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: rgb(255 255 255 / 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-chip__fill svg {
+    animation: none;
+  }
+}
