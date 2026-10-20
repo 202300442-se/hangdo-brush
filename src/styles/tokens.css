@@ -1,0 +1,122 @@
+/* =========================================================
+   Hangdo Design Tokens
+   모든 색·글꼴·간격·모션 값은 여기서만 정의한다.
+   컴포넌트에서는 var(--token)만 사용한다 (하드코딩 금지).
+   ========================================================= */
+
+:root {
+  /* ---------- Brand: Deep Green (포인트로만 사용) ---------- */
+  --green-950: #082a20;
+  --green-900: #0b382b;
+  --green-800: #124a39;
+  --green-700: #196047;
+  --green-100: #e3ece7;
+  --green-50: #f1f6f3;
+
+  /* ---------- Neutral ---------- */
+  --black: #090b0a;
+  --charcoal: #171a18;
+  --gray-700: #4a4f4c;
+  --gray-500: #6b716d; /* #747A76 → 흰 배경 대비 4.5:1 충족하도록 조정 */
+  --gray-300: #d4d8d5;
+  --gray-100: #f0f2f0;
+  --off-white: #f7f8f5;
+  --white: #ffffff;
+
+  /* ---------- Semantic ---------- */
+  --color-bg: var(--white);
+  --color-bg-subtle: var(--off-white);
+  --color-bg-inverse: var(--charcoal);
+  --color-text: var(--charcoal);
+  --color-text-muted: var(--gray-700);
+  --color-text-subtle: var(--gray-500);
+  --color-text-inverse: var(--off-white);
+  --color-border: var(--gray-300);
+  --color-border-strong: var(--charcoal);
+  --color-accent: var(--green-800);
+  --color-accent-hover: var(--green-900);
+  --color-accent-soft: var(--green-50);
+  --color-focus: #1d7a57;
+
+  --color-success: var(--green-700);
+  --color-success-bg: var(--green-50);
+  --color-warning: #7a5200;
+  --color-warning-bg: #fbf4e4;
+  --color-danger: #a12a1f;
+  --color-danger-bg: #fbeceb;
+  --color-info: #23486b;
+  --color-info-bg: #edf2f7;
+
+  /* ---------- Typography ---------- */
+  --font-ko: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --font-en: var(--font-ko);
+  --font-display: var(--font-ko);
+  --font-body: var(--font-ko);
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --fs-display: clamp(2.5rem, 1.2rem + 5.6vw, 5.75rem);
+  --fs-h1: clamp(2rem, 1.3rem + 3vw, 3.5rem);
+  --fs-h2: clamp(1.625rem, 1.2rem + 1.8vw, 2.5rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-lg: 1.125rem;
+  --fs-md: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-xs: 0.8125rem;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.35;
+  --lh-body: 1.65;
+  --tracking-tight: -0.025em;
+  --tracking-caps: 0.12em;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --section-y: clamp(4rem, 2.5rem + 6vw, 8rem);
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --container: 1240px;
+  --container-narrow: 780px;
+
+  /* ---------- Shape ---------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-pill: 999px;
+  --border-1: 1px solid var(--color-border);
+
+  /* ---------- Elevation (절제) ---------- */
+  --shadow-1: 0 1px 2px rgb(9 11 10 / 0.06);
+  --shadow-2: 0 8px 24px rgb(9 11 10 / 0.08);
+
+  /* ---------- Motion ---------- */
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 700ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* ---------- Layout ---------- */
+  --header-h: 72px;
+  --tap-min: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}

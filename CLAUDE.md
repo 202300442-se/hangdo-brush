@@ -1,0 +1,32 @@
+# 항도제일특수브러쉬 홈페이지 — 작업 규칙
+
+## 문서
+- 전체 기획: docs/MASTER_BRIEF.md
+- 중간고사 실행 계획(우선): docs/PLAN.md — 마감 2026-10-21 11:59 KST
+- 저장소: sieun-ops/hangdo-brush → https://sieun-ops.github.io/hangdo-brush/
+
+## 우선순위
+중간고사 핵심 흐름(홈 → AI 제작상담 → 결과 → 문의 요약)이 끝까지 작동하는 것이 최우선. 장식·부가 기능 때문에 이를 희생하지 않는다.
+
+## 사실 규칙
+- docs/MASTER_BRIEF.md 13절의 "확정" 정보만 사실로 쓴다. 나머지는 TODO 또는 "확인 중"으로 표시.
+- 회사 업력은 "1995년 창업 / 30년 이상". "40년" 금지.
+- "국내 1위/최고/유일/세계 최고" 금지. 제품 사양·인증·고객사·수치를 지어내지 않는다.
+- 추천 규칙은 데모이며 화면에 "데모 규칙 · 기술 검토 전"과 "최종 사양은 기술 담당자 검토 후 확정" 안내를 표시.
+
+## 기술
+- Next.js (App Router) + TypeScript. 지금은 `output: 'export'` 정적 빌드 + basePath `/hangdo-brush` → GitHub Pages. 11월에 같은 코드로 Vercel 이전.
+- 일반 CSS + 토큰(src/styles/tokens.css), Pretendard. 공개 사이트에 관리자 기능을 넣지 않는다(관리자는 별도 앱).
+- UI → services/* → engine/provider 구조. UI에 추천 로직을 넣지 않는다.
+- 추가 의존성은 꼭 필요할 때만. UI 컴포넌트 라이브러리 사용 금지.
+- API 키·비밀값을 저장소에 넣지 않는다. 개인정보를 수집·저장하지 않는다.
+
+## 품질
+- 상태: 로딩 / 정상 / 빈 결과 / 오류 / 잘못된 입력 — 각각 이유와 할 일을 안내
+- 접근성: 키보드 초점 표시, aria-live 상태 안내, 레이블, prefers-reduced-motion
+- 360~390px 폭에서 가로 넘침 없음
+- 커밋 전: npm run build, npm test 통과
+
+## git
+- 이 폴더는 독립 저장소. 상위 폴더(C:\Users\김시은)의 git 저장소를 건드리지 않는다.
+- 테스트를 통과하지 않았거나 배포 URL을 확인하지 않았으면 완료라고 말하지 않는다.

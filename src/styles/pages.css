@@ -1,0 +1,231 @@
+/* ---------- Shared content ---------- */
+.split {
+  display: grid;
+  gap: var(--space-7);
+}
+@media (min-width: 880px) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+.split__media {
+  aspect-ratio: 4 / 3;
+}
+.prose {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+.prose p,
+.prose li {
+  color: var(--color-text-muted);
+}
+.prose ul {
+  display: grid;
+  gap: var(--space-3);
+  padding-left: 1.2em;
+}
+.prose__sign {
+  margin-top: var(--space-3);
+  color: var(--color-text);
+}
+.timeline__note {
+  display: block;
+  font-weight: var(--fw-regular);
+}
+.info-list {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: var(--space-2) var(--space-4);
+}
+.info-list > div {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: var(--space-3);
+}
+.info-list dt {
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+}
+.info-list--inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+.info-list--inline > div {
+  grid-template-columns: auto auto;
+}
+
+/* ---------- Products ---------- */
+.chip-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip-nav .tag {
+  min-height: var(--tap-min);
+  padding-inline: var(--space-4);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+}
+.chip-nav .tag:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.gallery__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-6) var(--space-4);
+}
+.gallery__item {
+  display: grid;
+  gap: var(--space-3);
+}
+.gallery__media {
+  aspect-ratio: 3 / 2;
+}
+.contact-cta {
+  display: grid;
+  gap: var(--space-5);
+  justify-items: start;
+}
+
+/* ---------- Contact ---------- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-4);
+}
+.contact-card {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  padding: var(--space-6) var(--space-5);
+  border: var(--border-1);
+  border-top: 3px solid var(--color-border-strong);
+}
+.contact-card--primary {
+  border-top-color: #fee500;
+}
+
+/* ---------- Order ---------- */
+.order {
+  display: grid;
+  gap: var(--space-6);
+}
+.order__form {
+  display: grid;
+  gap: var(--space-3);
+}
+.order__row {
+  display: flex;
+  gap: var(--space-3);
+}
+.order__row .input {
+  flex: 1;
+  min-width: 0;
+  text-transform: uppercase;
+}
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent);
+  font-weight: var(--fw-semibold);
+  text-decoration: underline;
+  cursor: pointer;
+  min-height: 24px;
+}
+.order__empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--color-border);
+  text-align: center;
+}
+.order-card {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  border: var(--border-1);
+  border-top: 3px solid var(--color-accent);
+}
+.order-card__head {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+.order-card__status {
+  color: var(--color-accent);
+}
+.progress {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.progress__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text-subtle);
+}
+.progress__item::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+.progress__item:first-child::before {
+  top: 50%;
+}
+.progress__item:last-child::before {
+  bottom: 50%;
+}
+.progress__dot {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  margin-left: 5px;
+  border-radius: 50%;
+  border: 2px solid var(--gray-300);
+  background: var(--white);
+}
+.progress__item.is-done {
+  color: var(--color-text);
+}
+.progress__item.is-done .progress__dot {
+  background: var(--green-700);
+  border-color: var(--green-700);
+}
+.progress__item.is-current {
+  color: var(--color-accent);
+  font-weight: var(--fw-bold);
+}
+.progress__item.is-current .progress__dot {
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  border: 5px solid var(--color-accent);
+}
+@media (max-width: 480px) {
+  .order__row {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "pages-preview", "runtimeExecutable": "node", "runtimeArgs": ["scripts/serve-preview.mjs"], "port": 4173 }
+  ]
+}
