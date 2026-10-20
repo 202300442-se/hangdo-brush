@@ -129,16 +129,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 스크롤하면 사진이 화면 가득 펼쳐짐 */}
-      <section className="expand" aria-labelledby="expand-title">
-        <div className="expand__frame">
-          <Photo id="roll-blue-filament-stack" sizes="100vw" decorative />
-          <div className="expand__caption on-dark">
-            <p className="expand__label">Custom Brush Engineering</p>
-            <h2 id="expand-title" className="expand__title">
-              맞춤형 산업용 브러쉬 개발
-            </h2>
-          </div>
+      {/* 큰 영문 타이포 + 원형 버튼 (밝은 회색 · 흑백 사진) */}
+      <section className="xl" aria-labelledby="xl-title">
+        <span className="xl__circle" aria-hidden="true" />
+        <span className="xl__orb" aria-hidden="true">
+          <Photo id="roll-knot-wire-top" sizes="(min-width: 880px) 40vw, 80vw" decorative />
+        </span>
+        <div className="container xl__inner reveal">
+          <h2 id="xl-title" className="xl__title" translate="no">
+            <span className="xl__line">CUSTOM BRUSH</span>
+            <span className="xl__line">ENGINEERING</span>
+          </h2>
+          <Link href="/products/" className="circle-link">
+            <span className="circle-link__text">VIEW MORE</span>
+            <span className="sr-only"> — 브러쉬·제품 보기</span>
+            <svg className="circle-link__arrow" width="44" height="12" viewBox="0 0 44 12" aria-hidden="true" focusable="false">
+              <path d="M0 6h42M37 1l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </Link>
+          <p className="xl__text">
+            항도제일특수브러쉬는 고객의 공정을 먼저 이해하고,
+            <br />
+            그에 맞는 소재와 구조로 브러쉬를 설계·제작합니다.
+          </p>
         </div>
       </section>
 

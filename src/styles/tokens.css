@@ -114,6 +114,12 @@
   --tap-min: 44px;
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --header-h: 108px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --dur-fast: 0ms;

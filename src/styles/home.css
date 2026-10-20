@@ -626,56 +626,6 @@
 
 
 
-/* ---------- 화면 가득 펼쳐지는 사진 ---------- */
-.expand {
-  overflow: clip;
-  background: var(--color-bg-subtle);
-}
-.expand__frame {
-  position: relative;
-  height: min(88vh, 820px);
-  overflow: clip;
-  transform-origin: center;
-  background: var(--black);
-}
-.expand__frame img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.expand__frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(0 0 0 / 0) 40%, rgb(0 0 0 / 0.6) 100%);
-}
-.expand__caption {
-  position: absolute;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: clamp(2rem, 5vw, 4.5rem);
-  z-index: 1;
-  display: grid;
-  gap: var(--space-3);
-  max-width: var(--container);
-  margin-inline: auto;
-  color: var(--white);
-}
-.expand__label {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.08em;
-  color: rgb(255 255 255 / 0.8);
-}
-.expand__title {
-  font-size: clamp(2rem, 1.2rem + 3.6vw, 4.5rem);
-  font-weight: var(--fw-black);
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-}
-
 /* ---------- 제작문의 카드: 마우스를 올리면 투명 글라스로 ---------- */
 /* 사진(맨 아래) → 글라스 층(흐림 + 투명도 94%) → 단색 면(평소 보임, 올리면 사라짐) → 글자 */
 .inquiry-option {
@@ -744,4 +694,147 @@
 .inquiry-option:hover .inquiry-option__arrow,
 .inquiry-option:focus-visible .inquiry-option__arrow {
   transform: translateX(8px);
+}
+
+/* ---------- 큰 영문 타이포 섹션 (밝은 회색 · 원 · 흑백 사진) ---------- */
+.xl {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(5rem, 3rem + 8vw, 10rem);
+  background: #f2f2f1;
+}
+.xl__circle {
+  position: absolute;
+  top: -55%;
+  left: 18%;
+  width: max(110vw, 1100px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f8f8f7;
+  box-shadow: 0 0 120px rgb(0 0 0 / 0.04);
+}
+.xl__orb {
+  position: absolute;
+  left: -9vw;
+  bottom: -32%;
+  width: clamp(260px, 34vw, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 30px 20px 80px rgb(0 0 0 / 0.12);
+}
+.xl__orb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(0.9) brightness(1.15);
+  opacity: 0.85;
+}
+.xl__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-6) clamp(1.5rem, 4vw, 4rem);
+}
+.xl__title {
+  display: grid;
+  font-size: clamp(2.4rem, 1rem + 6.2vw, 6.5rem);
+  font-weight: var(--fw-black);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  color: #111;
+}
+.xl__line {
+  display: block;
+}
+.xl__text {
+  grid-column: 1 / -1;
+  margin-top: clamp(2rem, 4vw, 4rem);
+  font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.5rem);
+  font-weight: var(--fw-medium);
+  line-height: 1.6;
+  color: #222;
+}
+
+/* 원형 VIEW MORE 버튼 */
+.circle-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(120px, 12vw, 172px);
+  aspect-ratio: 1;
+  border: 1px solid rgb(17 17 17 / 0.28);
+  border-radius: 50%;
+  color: #111;
+  text-decoration: none;
+  isolation: isolate;
+  overflow: visible;
+  transition: border-color 0.5s var(--ease-out), color 0.5s var(--ease-out);
+}
+.circle-link::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: 50%;
+  background: #111;
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.circle-link__text {
+  font-size: 0.8rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+}
+.circle-link__arrow {
+  position: absolute;
+  right: -26px;
+  top: 50%;
+  margin-top: -6px;
+  transition: transform 0.5s var(--ease-out);
+}
+.circle-link:hover,
+.circle-link:focus-visible {
+  color: var(--white);
+  border-color: #111;
+}
+.circle-link:hover::before,
+.circle-link:focus-visible::before {
+  transform: scale(1);
+}
+.circle-link:hover .circle-link__arrow,
+.circle-link:focus-visible .circle-link__arrow {
+  color: #111;
+  transform: translateX(10px);
+}
+
+@media (max-width: 640px) {
+  .xl__inner {
+    grid-template-columns: 1fr;
+  }
+  .circle-link {
+    width: 112px;
+  }
+  .xl__orb {
+    left: auto;
+    right: -22vw;
+    bottom: -18%;
+    width: 62vw;
+  }
+}
+
+/* 회사소개 사진: 너무 크지 않게 */
+.panel__media {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1;
+  justify-self: end;
+}
+@media (max-width: 879px) {
+  .panel__media {
+    max-width: 100%;
+    aspect-ratio: 16 / 10;
+    justify-self: stretch;
+  }
 }
