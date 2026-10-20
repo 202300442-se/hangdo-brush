@@ -5,6 +5,7 @@ import { RevealObserver } from "@/components/Reveal";
 import { company } from "@/data/company";
 import "@/styles/globals.css";
 import "@/styles/layout.css";
+import "@/styles/motion.css";
 
 export const metadata: Metadata = {
   title: {
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b382b",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko">
       <head>
         {/* Pretendard — SIL Open Font License 1.1 */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           crossOrigin="anonymous"

@@ -21,7 +21,7 @@ export function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <span className={`logo${inverse ? " logo--inverse" : ""}`}>
       <LogoMark />
-      <span className="logo__text">
+      <span className="logo__text" translate="no">
         <span className="logo__ko">항도제일특수브러쉬</span>
         <span className="logo__en">HANDO JEIL SPECIAL BRUSH</span>
       </span>

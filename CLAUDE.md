@@ -22,6 +22,11 @@
 - 추가 의존성은 꼭 필요할 때만. UI 컴포넌트 라이브러리 사용 금지.
 - API 키·비밀값을 저장소에 넣지 않는다. 개인정보를 수집·저장하지 않는다.
 
+## UI 규칙
+- 화면·컴포넌트를 바꿀 때는 `.claude/skills/web-interface-guidelines` 스킬(Vercel Web Interface Guidelines)을 따른다.
+- 인위적인 효과(입자·눈송이·과한 빛줄기) 금지. 모션은 transform/opacity 위주, 동작 줄이기 설정 존중.
+- 브랜드 기준: docs/BRAND.md (캐치프레이즈 "산업 현장의 문제를 해결하는 Brush Solution Company")
+
 ## 품질
 - 상태: 로딩 / 정상 / 빈 결과 / 오류 / 잘못된 입력 — 각각 이유와 할 일을 안내
 - 접근성: 키보드 초점 표시, aria-live 상태 안내, 레이블, prefers-reduced-motion

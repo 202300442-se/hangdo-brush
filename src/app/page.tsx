@@ -15,14 +15,15 @@ export default function Home() {
       <section className="hero on-dark" aria-labelledby="hero-title">
         <HeroMedia />
         <div className="hero__shade" aria-hidden="true" />
-        <div className="container hero__inner">
+        <div className="container hero__inner hero-parallax">
           <p className="hero__kicker">Since {company.founded} · Busan, Korea</p>
           <h1 id="hero-title" className="hero__title">
-            시중 브러쉬로 해결되지 않는 공정을 위해,
-            <br />
-            브러쉬를 개발합니다.
+            <span className="hero__line">산업 현장의 문제를 해결하는</span>
+            <span className="hero__line hero__line--en" translate="no">
+              Brush Solution Company
+            </span>
           </h1>
-          <p className="hero__en">BRUSH ENGINEERING FOR EVERY PROCESS</p>
+          <p className="hero__en">고객의 공정에 맞춰 브러쉬를 개발합니다</p>
           <div className="btn-row hero__cta">
             <Link href="/finder/" className="btn btn--light btn--lg">
               AI 제작상담 시작
@@ -40,7 +41,7 @@ export default function Home() {
         <div className="container panel__split">
           <div className="panel__copy reveal">
             <p className="eyebrow">회사소개</p>
-            <h2 id="company-title" className="h1">
+            <h2 id="company-title" className="h1 scroll-ink">
               제품을 고르는 것이 아니라,
               <br />
               공정에 맞게 개발합니다.
@@ -71,7 +72,7 @@ export default function Home() {
               회사소개 자세히 보기 →
             </Link>
           </div>
-          <div className="panel__media reveal">
+          <div className="panel__media scroll-zoom">
             <Photo id="wheel-knot-hangdo-mark" sizes="(min-width: 880px) 50vw, 100vw" />
           </div>
         </div>
@@ -79,7 +80,7 @@ export default function Home() {
 
       {/* 03 찾아오시는 길 */}
       <section className="panel panel--dark on-dark" aria-labelledby="location-title">
-        <div className="panel__bg" aria-hidden="true">
+        <div className="panel__bg scroll-zoom-bg" aria-hidden="true">
           <Photo id="wire-spools" sizes="100vw" decorative />
         </div>
         <div className="container panel__inner reveal">
@@ -120,7 +121,7 @@ export default function Home() {
         <div className="container">
           <div className="inquiry__head reveal">
             <p className="eyebrow">제작문의</p>
-            <h2 id="inquiry-title" className="h1">
+            <h2 id="inquiry-title" className="h1 scroll-ink">
               어떤 브러쉬가 필요한지
               <br />
               몰라도 괜찮습니다.
@@ -176,7 +177,7 @@ export default function Home() {
 
       {/* 06 소재·기술 */}
       <section className="tech-band on-dark" aria-labelledby="tech-title">
-        <div className="tech-band__media" aria-hidden="true">
+        <div className="tech-band__media scroll-zoom-bg" aria-hidden="true">
           <Photo id="machine-knot-wheel" sizes="100vw" decorative />
         </div>
         <div className="container tech-band__copy reveal">

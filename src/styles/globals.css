@@ -8,6 +8,8 @@
 }
 html {
   -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgb(43 74 38 / 0.15);
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + var(--space-4));
 }
@@ -140,6 +142,15 @@ textarea {
   font-weight: var(--fw-black);
   line-height: 1.05;
   letter-spacing: -0.035em;
+}
+.display,
+.h1,
+.h2,
+.h3 {
+  text-wrap: balance;
+}
+.lead {
+  text-wrap: pretty;
 }
 .h1 {
   font-size: var(--fs-h1);

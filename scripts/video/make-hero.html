@@ -14,7 +14,7 @@
 <div id="log">ready</div>
 <script>
 // 항도제일특수브러쉬 메인 배경 영상 생성기
-// - 회사 실사 사진 2장을 천천히 흐르듯 교차 + 떠다니는 미세 입자 + 부드러운 빛줄기
+// - 회사 실사 사진 2장을 천천히 움직이며 교차 (카메라가 천천히 흐르는 느낌만, 인위적 효과 없음)
 // - 모든 움직임이 주기 T의 정수배라 0초와 T초 화면이 같아 끊김 없이 반복된다.
 const T = 10;            // 반복 주기 (초)
 const FPS = 30;
@@ -71,45 +71,9 @@ function frame(t, imgs) {
   drawCover(imgs[0], 1.14 + 0.04 * Math.sin(TAU * p), 26 * Math.sin(TAU * p), 10 * Math.cos(TAU * p), 1);
   drawCover(imgs[1], 1.12 + 0.04 * Math.cos(TAU * p), -24 * Math.cos(TAU * p), 12 * Math.sin(TAU * p), mixB);
 
-  // 색보정: 어둡고 차분한 녹회색 톤
-  ctx.fillStyle = "rgba(6, 16, 10, 0.5)";
+  // 색보정만 적용 — 입자·빛줄기 같은 인위적인 효과는 넣지 않는다 (2026-10-21 요청)
+  ctx.fillStyle = "rgba(6, 14, 10, 0.32)";
   ctx.fillRect(0, 0, W, H);
-
-  // 빛줄기 (왼쪽 위에서 비스듬히)
-  ctx.save();
-  ctx.globalCompositeOperation = "screen";
-  ctx.filter = "blur(36px)";
-  for (let k = 0; k < 3; k++) {
-    const a = 0.06 + 0.05 * (0.5 + 0.5 * Math.sin(TAU * p * (k + 1) + k * 2));
-    const x = 200 + k * 380 + 60 * Math.sin(TAU * p + k);
-    const g = ctx.createLinearGradient(x, 0, x + 420, H);
-    g.addColorStop(0, `rgba(190, 220, 190, ${a})`);
-    g.addColorStop(1, "rgba(190, 220, 190, 0)");
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.moveTo(x - 60, -10);
-    ctx.lineTo(x + 90, -10);
-    ctx.lineTo(x + 520, H + 10);
-    ctx.lineTo(x + 220, H + 10);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  ctx.filter = "none";
-  // 떠다니는 미세 입자 (보케)
-  for (const q of particles) {
-    const y = (((q.y - p * q.rise * H) % H) + H) % H;
-    const x = q.x + q.sway * Math.sin(TAU * p * q.swayN + q.ph);
-    const a = 0.1 + 0.32 * (0.5 + 0.5 * Math.sin(TAU * p * q.tw + q.ph));
-    const g = ctx.createRadialGradient(x, y, 0, x, y, q.r * 4);
-    g.addColorStop(0, `rgba(235, 245, 230, ${a})`);
-    g.addColorStop(1, "rgba(235, 245, 230, 0)");
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, q.r * 4, 0, TAU);
-    ctx.fill();
-  }
-  ctx.restore();
 
   // 비네팅
   const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.95);

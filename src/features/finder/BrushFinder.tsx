@@ -223,7 +223,7 @@ export function BrushFinder() {
                         required
                         maxLength={100}
                         error={errors.goalOther}
-                        placeholder="예: 유리 기판 이송 중 먼지 털기"
+                        placeholder="예: 유리 기판 이송 중 먼지 털기…"
                       />
                     )}
                   </ChoiceGroup>
@@ -236,7 +236,7 @@ export function BrushFinder() {
                     required
                     maxLength={100}
                     error={errors.target}
-                    placeholder="예: 가리비, 버스 차체, 운동화 밑창, 냉연 강판 표면"
+                    placeholder="예: 가리비, 버스 차체, 냉연 강판 표면…"
                   />
                   <TextField
                     id="outcome"
@@ -244,7 +244,7 @@ export function BrushFinder() {
                     value={answers.outcome}
                     onChange={(v) => set("outcome", v)}
                     maxLength={100}
-                    placeholder="예: 껍질 손상 없이 뻘만 제거 / 표면에 물방울이 남지 않게"
+                    placeholder="예: 껍질 손상 없이 뻘만 제거…"
                   />
                   <TextField
                     id="problem"
@@ -253,7 +253,7 @@ export function BrushFinder() {
                     onChange={(v) => set("problem", v)}
                     multiline
                     maxLength={300}
-                    placeholder="예: 시중 브러쉬는 모가 금방 빠집니다 / 세척 후 얼룩이 남습니다"
+                    placeholder="예: 시중 브러쉬는 모가 금방 빠집니다…"
                   />
                 </>
               )}
@@ -280,7 +280,7 @@ export function BrushFinder() {
                     value={answers.equipment}
                     onChange={(v) => set("equipment", v)}
                     maxLength={100}
-                    placeholder="예: 컨베이어 위 고정, 폭 1,200mm 라인"
+                    placeholder="예: 컨베이어 위 고정, 폭 1,200mm 라인…"
                   />
                 </>
               )}
@@ -367,7 +367,7 @@ export function BrushFinder() {
                     value={answers.materialWish}
                     onChange={(v) => set("materialWish", v)}
                     maxLength={50}
-                    placeholder="예: 지금 쓰는 것과 같은 소재"
+                    placeholder="예: 지금 쓰는 것과 같은 소재…"
                   />
                 </>
               )}

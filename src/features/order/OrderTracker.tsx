@@ -102,10 +102,12 @@ export function OrderTracker() {
           <input
             ref={idRef}
             id="order-id"
+            name="orderId"
             className="input"
+            spellCheck={false}
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="HJ-0000-000"
+            placeholder="예: HJ-2026-001…"
             autoComplete="off"
             aria-invalid={errors.id ? true : undefined}
             aria-describedby={errors.id ? "order-id-error" : undefined}
@@ -121,10 +123,12 @@ export function OrderTracker() {
           <input
             ref={codeRef}
             id="order-code"
+            name="lookupCode"
             className="input"
+            spellCheck={false}
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="숫자 6자리"
+            placeholder="숫자 6자리…"
             inputMode="numeric"
             autoComplete="off"
             maxLength={7}
