@@ -8,11 +8,11 @@ import "@/styles/layout.css";
 
 export const metadata: Metadata = {
   title: {
-    default: `${company.nameKo} | 산업용 브러쉬 주문제작`,
+    default: `${company.nameKo} | 맞춤형 산업용 브러쉬 개발`,
     template: `%s | ${company.nameKo}`,
   },
   description:
-    "항도제일특수브러쉬(Hangdo Jeil Special Brush)는 1995년부터 부산에서 산업용 롤·휠·컵 브러쉬를 고객 공정에 맞춰 주문제작합니다. 브러쉬 이름을 몰라도 AI 제작상담으로 문의를 정리할 수 있습니다.",
+    "항도제일특수브러쉬(Hangdo Jeil Special Brush)는 1995년부터 부산에서 시중 브러쉬로 해결되지 않는 산업 공정을 위해 맞춤형 브러쉬를 개발·제작합니다. 철도 차량·버스·신발·수산물·농산물 세척, 철강 표면 세척과 물기 제거, 연마용 브러쉬.",
   applicationName: company.nameKo,
   openGraph: {
     type: "website",

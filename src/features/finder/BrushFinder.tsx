@@ -1,31 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
-import {
-  OTHER,
-  UNKNOWN,
-  attachments,
-  currentBrush,
-  environments,
-  industries,
-  materials,
-  motions,
-  purposes,
-  shapes,
-  targets,
-} from "@/data/finder-options";
-import { BrushFinderError, getRecommendation } from "@/services/brushFinderService";
+import { OTHER, UNKNOWN, environments, goals, methods, motions, resources, sensitivity } from "@/data/finder-options";
+import { BrushFinderError, createBrief } from "@/services/brushFinderService";
 import { ChoiceGroup, MultiChoiceGroup, TextField } from "./fields";
 import { buildMailto, buildSummary } from "./summary";
-import { emptyAnswers, type FieldErrors, type FinderAnswers, type FinderResult } from "./types";
+import { emptyAnswers, type DevBrief, type FieldErrors, type FinderAnswers } from "./types";
 import { firstInvalidStep, validateStep } from "./validation";
 
 const STEPS = [
-  { title: "작업 목적", desc: "어떤 작업에, 무엇에 쓰실지 알려주세요." },
-  { title: "사용 방식", desc: "설비에 어떻게 장착되는지 알려주세요. 모르셔도 괜찮습니다." },
-  { title: "규격·환경", desc: "아는 만큼만 적어 주세요. 비워 두면 '확인 필요'로 정리됩니다." },
-  { title: "수량·납기", desc: "마지막 단계입니다." },
+  { title: "해결할 문제", desc: "무엇을, 어떤 상태로 만들고 싶은지 알려주세요. 브러쉬 이름은 몰라도 됩니다." },
+  { title: "작업 방식", desc: "지금 어떻게 작업하고 있는지 알려주세요. 모르면 넘어가도 됩니다." },
+  { title: "작업 조건", desc: "아는 만큼만 적어 주세요. 비워 두면 '확인 필요'로 정리됩니다." },
+  { title: "수량·자료", desc: "마지막 단계입니다." },
 ] as const;
 
 type Phase = "form" | "loading" | "result" | "error";
@@ -66,7 +55,7 @@ export function BrushFinder() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<FinderAnswers>(emptyAnswers);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [result, setResult] = useState<FinderResult | null>(null);
+  const [brief, setBrief] = useState<DevBrief | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const [announce, setAnnounce] = useState("");
@@ -97,6 +86,32 @@ export function BrushFinder() {
     requestAnimationFrame(() => errorSummaryRef.current?.focus());
   };
 
+  const submit = async () => {
+    const bad = firstInvalidStep(answers);
+    if (bad >= 0) {
+      setStep(bad);
+      return showErrors(validateStep(bad, answers));
+    }
+    setPhase("loading");
+    setAnnounce("입력하신 내용으로 개발 의뢰서를 정리하고 있습니다.");
+    setCopyState("idle");
+    try {
+      const simulateError = new URLSearchParams(window.location.search).get("simulate") === "error";
+      const b = await createBrief(answers, { simulateError });
+      setBrief(b);
+      setPhase("result");
+      setAnnounce(
+        b.similar.length
+          ? `개발 의뢰서가 준비되었습니다. 유사 적용 분야 ${b.similar.length}개를 찾았습니다.`
+          : "개발 의뢰서가 준비되었습니다. 등록된 유사 적용 분야는 없습니다.",
+      );
+    } catch (err) {
+      setErrorMsg(err instanceof BrushFinderError ? err.message : "알 수 없는 오류가 발생했습니다.");
+      setPhase("error");
+      setAnnounce("의뢰서를 만들지 못했습니다. 다시 시도하거나 전화·카카오톡으로 문의해 주세요.");
+    }
+  };
+
   const next = () => {
     const e = validateStep(step, answers);
     if (Object.keys(e).length) return showErrors(e);
@@ -114,36 +129,10 @@ export function BrushFinder() {
     setStep((s) => Math.max(0, s - 1));
   };
 
-  const submit = async () => {
-    const bad = firstInvalidStep(answers);
-    if (bad >= 0) {
-      setStep(bad);
-      return showErrors(validateStep(bad, answers));
-    }
-    setPhase("loading");
-    setAnnounce("입력하신 내용으로 검토 후보를 정리하고 있습니다.");
-    setCopyState("idle");
-    try {
-      const simulateError = new URLSearchParams(window.location.search).get("simulate") === "error";
-      const r = await getRecommendation(answers, { simulateError });
-      setResult(r);
-      setPhase("result");
-      setAnnounce(
-        r.kind === "matched"
-          ? "사전 검토 결과가 준비되었습니다."
-          : "일치하는 추천 후보가 없습니다. 입력 내용은 문의 요약으로 정리되었습니다.",
-      );
-    } catch (err) {
-      setErrorMsg(err instanceof BrushFinderError ? err.message : "알 수 없는 오류가 발생했습니다.");
-      setPhase("error");
-      setAnnounce("결과를 불러오지 못했습니다. 다시 시도하거나 전화·카카오톡으로 문의해 주세요.");
-    }
-  };
-
   const restart = () => {
     setAnswers(emptyAnswers);
     setErrors({});
-    setResult(null);
+    setBrief(null);
     setStep(0);
     setPhase("form");
   };
@@ -153,12 +142,12 @@ export function BrushFinder() {
     setStep(0);
   };
 
-  const summary = result ? buildSummary(answers, result) : "";
+  const summary = brief ? buildSummary(brief, answers.memo) : "";
 
   const onCopy = async () => {
     const ok = await copyText(summary);
     setCopyState(ok ? "copied" : "failed");
-    setAnnounce(ok ? "요약이 복사되었습니다." : "자동 복사에 실패했습니다. 요약 상자를 직접 선택해 복사해 주세요.");
+    setAnnounce(ok ? "의뢰서가 복사되었습니다." : "자동 복사에 실패했습니다. 의뢰서 상자를 직접 선택해 복사해 주세요.");
     if (!ok) summaryRef.current?.select();
   };
 
@@ -180,7 +169,7 @@ export function BrushFinder() {
             next();
           }}
         >
-          <ol className="stepper" role="list" aria-label="상담 단계">
+          <ol className="stepper" role="list" aria-label="의뢰서 작성 단계">
             {STEPS.map((s, i) => (
               <li
                 key={s.title}
@@ -217,65 +206,54 @@ export function BrushFinder() {
               {step === 0 && (
                 <>
                   <ChoiceGroup
-                    name="purpose"
-                    legend="어떤 작업에 사용하시나요?"
-                    options={purposes}
-                    value={answers.purpose}
-                    onChange={(v) => set("purpose", v)}
+                    name="goal"
+                    legend="어떤 작업을 하려고 하시나요?"
+                    options={goals}
+                    value={answers.goal}
+                    onChange={(v) => set("goal", v)}
                     required
-                    error={errors.purpose}
+                    error={errors.goal}
                   >
-                    {answers.purpose === OTHER && (
+                    {answers.goal === OTHER && (
                       <TextField
-                        id="purposeOther"
+                        id="goalOther"
                         label="작업 내용"
-                        value={answers.purposeOther}
-                        onChange={(v) => set("purposeOther", v)}
+                        value={answers.goalOther}
+                        onChange={(v) => set("goalOther", v)}
                         required
                         maxLength={100}
-                        error={errors.purposeOther}
-                        placeholder="예: 유리 기판 표면 먼지 제거"
+                        error={errors.goalOther}
+                        placeholder="예: 유리 기판 이송 중 먼지 털기"
                       />
                     )}
                   </ChoiceGroup>
-                  <ChoiceGroup
-                    name="target"
-                    legend="브러쉬가 닿는 대상물은 무엇인가요?"
-                    options={targets}
+                  <TextField
+                    id="target"
+                    label="브러쉬가 닿는 대상은 무엇인가요?"
+                    help="최대한 구체적으로 적어 주세요. 같은 철강이라도 표면 세척인지 물기 제거인지에 따라 브러쉬가 완전히 달라집니다."
                     value={answers.target}
                     onChange={(v) => set("target", v)}
                     required
+                    maxLength={100}
                     error={errors.target}
-                  >
-                    {answers.target === OTHER && (
-                      <TextField
-                        id="targetOther"
-                        label="대상물"
-                        value={answers.targetOther}
-                        onChange={(v) => set("targetOther", v)}
-                        required
-                        maxLength={100}
-                        error={errors.targetOther}
-                        placeholder="예: 고무 벨트, 목재 판넬"
-                      />
-                    )}
-                  </ChoiceGroup>
-                  <ChoiceGroup
-                    name="industry"
-                    legend="어느 산업 현장인가요?"
-                    options={industries}
-                    value={answers.industry}
-                    onChange={(v) => set("industry", v)}
+                    placeholder="예: 가리비, 버스 차체, 운동화 밑창, 냉연 강판 표면"
+                  />
+                  <TextField
+                    id="outcome"
+                    label="어떤 상태가 되면 성공인가요?"
+                    value={answers.outcome}
+                    onChange={(v) => set("outcome", v)}
+                    maxLength={100}
+                    placeholder="예: 껍질 손상 없이 뻘만 제거 / 표면에 물방울이 남지 않게"
                   />
                   <TextField
                     id="problem"
-                    label="해결하려는 문제가 있다면 적어 주세요"
+                    label="지금 겪고 있는 문제가 있다면 적어 주세요"
                     value={answers.problem}
                     onChange={(v) => set("problem", v)}
                     multiline
                     maxLength={300}
-                    error={errors.problem}
-                    placeholder="예: 기존 브러쉬 모가 빨리 빠집니다 / 세척 후 얼룩이 남습니다"
+                    placeholder="예: 시중 브러쉬는 모가 금방 빠집니다 / 세척 후 얼룩이 남습니다"
                   />
                 </>
               )}
@@ -283,32 +261,47 @@ export function BrushFinder() {
               {step === 1 && (
                 <>
                   <ChoiceGroup
+                    name="method"
+                    legend="지금은 어떻게 작업하고 있나요?"
+                    options={methods}
+                    value={answers.method}
+                    onChange={(v) => set("method", v)}
+                  />
+                  <ChoiceGroup
                     name="motion"
-                    legend="브러쉬는 어떻게 사용되나요?"
+                    legend="브러쉬는 어떻게 움직이나요?"
                     options={motions}
                     value={answers.motion}
                     onChange={(v) => set("motion", v)}
                   />
-                  <ChoiceGroup
-                    name="shape"
-                    legend="생각하시는 형태가 있나요?"
-                    help="사진에서 보신 모양과 비슷한 것을 고르시면 됩니다."
-                    options={shapes}
-                    value={answers.shape}
-                    onChange={(v) => set("shape", v)}
-                  />
-                  <ChoiceGroup
-                    name="currentBrush"
-                    legend="현재 사용 중인 브러쉬가 있나요?"
-                    options={currentBrush}
-                    value={answers.currentBrush}
-                    onChange={(v) => set("currentBrush", v)}
+                  <TextField
+                    id="equipment"
+                    label="설비 이름이나 장착 공간을 알면 적어 주세요"
+                    value={answers.equipment}
+                    onChange={(v) => set("equipment", v)}
+                    maxLength={100}
+                    placeholder="예: 컨베이어 위 고정, 폭 1,200mm 라인"
                   />
                 </>
               )}
 
               {step === 2 && (
                 <>
+                  <MultiChoiceGroup
+                    name="environments"
+                    legend="어떤 환경에서 사용하나요?"
+                    options={environments}
+                    value={answers.environments}
+                    onChange={(v) => set("environments", v)}
+                    exclusive={["none", UNKNOWN]}
+                  />
+                  <ChoiceGroup
+                    name="sensitivity"
+                    legend="대상 표면은 얼마나 민감한가요?"
+                    options={sensitivity}
+                    value={answers.sensitivity}
+                    onChange={(v) => set("sensitivity", v)}
+                  />
                   <fieldset className="field">
                     <legend className="field__label">
                       대략적인 치수 <span className="field__opt">선택</span>
@@ -335,7 +328,7 @@ export function BrushFinder() {
                       />
                       <TextField
                         id="length"
-                        label="길이·모 폭"
+                        label="길이·폭"
                         value={answers.length}
                         onChange={(v) => set("length", v)}
                         inputMode="decimal"
@@ -355,30 +348,26 @@ export function BrushFinder() {
                       />
                     </div>
                   </fieldset>
+                  {answers.motion === "rotary" && (
+                    <TextField
+                      id="rpm"
+                      label="회전 속도"
+                      help="모르시면 비워 두세요."
+                      value={answers.rpm}
+                      onChange={(v) => set("rpm", v)}
+                      inputMode="numeric"
+                      suffix="RPM"
+                      error={errors.rpm}
+                    />
+                  )}
                   <TextField
-                    id="rpm"
-                    label="회전 속도"
-                    help="모르시면 비워 두세요."
-                    value={answers.rpm}
-                    onChange={(v) => set("rpm", v)}
-                    inputMode="numeric"
-                    suffix="RPM"
-                    error={errors.rpm}
-                  />
-                  <MultiChoiceGroup
-                    name="environments"
-                    legend="어떤 환경에서 사용하나요?"
-                    options={environments}
-                    value={answers.environments}
-                    onChange={(v) => set("environments", v)}
-                    exclusive={["none", UNKNOWN]}
-                  />
-                  <ChoiceGroup
-                    name="material"
-                    legend="원하시는 모 소재가 있나요?"
-                    options={materials}
-                    value={answers.material}
-                    onChange={(v) => set("material", v)}
+                    id="materialWish"
+                    label="원하는 소재가 있다면 적어 주세요"
+                    help="없으면 비워 두세요. 소재와 구조는 공정을 확인한 뒤 대표가 직접 제안합니다."
+                    value={answers.materialWish}
+                    onChange={(v) => set("materialWish", v)}
+                    maxLength={50}
+                    placeholder="예: 지금 쓰는 것과 같은 소재"
                   />
                 </>
               )}
@@ -405,13 +394,14 @@ export function BrushFinder() {
                       error={errors.dueDate}
                     />
                   </div>
-                  <ChoiceGroup
-                    name="attachment"
-                    legend="사진이나 도면이 있나요?"
-                    help="파일은 이 사이트에 올리지 않습니다. 문의 메일·카카오톡에 직접 첨부해 주세요."
-                    options={attachments}
-                    value={answers.attachment}
-                    onChange={(v) => set("attachment", v)}
+                  <MultiChoiceGroup
+                    name="resources"
+                    legend="보내 주실 수 있는 자료가 있나요?"
+                    help="파일은 이 사이트에 올리지 않습니다. 의뢰서를 보낼 때 카카오톡·메일에 직접 첨부해 주세요."
+                    options={resources}
+                    value={answers.resources}
+                    onChange={(v) => set("resources", v)}
+                    exclusive={["none"]}
                   />
                   <TextField
                     id="memo"
@@ -421,7 +411,6 @@ export function BrushFinder() {
                     onChange={(v) => set("memo", v)}
                     multiline
                     maxLength={500}
-                    error={errors.memo}
                   />
                 </>
               )}
@@ -436,7 +425,7 @@ export function BrushFinder() {
                 <span />
               )}
               <button type="submit" className="btn btn--primary btn--lg">
-                {step < STEPS.length - 1 ? "다음 →" : "결과 보기"}
+                {step < STEPS.length - 1 ? "다음 →" : "의뢰서 만들기"}
               </button>
             </div>
           </div>
@@ -448,9 +437,9 @@ export function BrushFinder() {
         <div className="finder__panel finder__state" aria-busy="true">
           <span className="spinner" aria-hidden="true" />
           <h2 ref={headingRef} tabIndex={-1} className="h3">
-            검토 후보를 정리하고 있습니다…
+            개발 의뢰서를 정리하고 있습니다…
           </h2>
-          <p className="muted">입력하신 작업 조건을 데모 규칙과 비교하는 중입니다.</p>
+          <p className="muted">입력하신 조건을 정리하고 유사 적용 분야를 찾는 중입니다.</p>
         </div>
       )}
 
@@ -459,11 +448,11 @@ export function BrushFinder() {
         <div className="finder__panel">
           <div className="notice notice--danger">
             <h2 ref={headingRef} tabIndex={-1} className="notice__title">
-              결과를 불러오지 못했습니다
+              의뢰서를 만들지 못했습니다
             </h2>
             <p>
               이유: {errorMsg} 입력하신 답변은 그대로 남아 있으니 다시 시도해 주세요. 계속 실패하면 전화나
-              카카오톡으로 문의해 주시면 같은 내용을 안내해 드립니다.
+              카카오톡으로 같은 내용을 알려 주세요.
             </p>
           </div>
           <div className="btn-row finder__actions">
@@ -481,113 +470,116 @@ export function BrushFinder() {
       )}
 
       {/* ---------------- RESULT ---------------- */}
-      {phase === "result" && result && (
+      {phase === "result" && brief && (
         <div className="finder__result">
           <div className="finder__result-head">
-            <span className="tag tag--demo">데모 규칙 · 기술 검토 전</span>
+            <span className="tag tag--accent">개발 의뢰서</span>
             <h2 ref={headingRef} tabIndex={-1} className="h2">
-              {result.kind === "matched" ? "사전 검토 결과" : "추천 후보를 특정하지 못했습니다"}
+              개발 의뢰서가 준비되었습니다
             </h2>
+            <p className="brief-headline">{brief.headline}</p>
           </div>
 
-          {result.kind === "unmatched" ? (
-            <div className="notice notice--warning">
-              <p className="notice__title">일치하는 추천 규칙이 없습니다</p>
-              <p>
-                입력하신 작업은 현재 데모 규칙에 없는 조건입니다. 주문제작이 불가능하다는 뜻이 아니므로, 아래 요약을
-                그대로 보내 주시면 기술 담당자가 직접 검토합니다.
-              </p>
-            </div>
-          ) : (
-            <div className="notice notice--success">
-              <p className="notice__title">입력하신 조건으로 검토 후보를 정리했습니다</p>
-              <p>아래 후보와 확인 필요 항목을 문의 요약에 담았습니다.</p>
-            </div>
-          )}
-
           <div className="notice">
-            <p className="notice__title">추천 결과는 제작 상담을 위한 사전 안내입니다.</p>
-            <p>최종 소재와 사양은 기술 담당자의 검토 후 확정됩니다.</p>
+            <p className="notice__title">소재와 구조는 공정을 확인한 뒤 대표가 직접 제안합니다.</p>
+            <p>이 의뢰서는 상담을 빠르게 시작하기 위한 사전 정리이며, 제품 사양을 확정하지 않습니다.</p>
           </div>
 
           <div className="result-grid">
-            <section className="result-card" aria-labelledby="r-shapes">
-              <h3 id="r-shapes" className="h3">
-                검토 후보 형태
+            <section className="result-card" aria-labelledby="r-known">
+              <h3 id="r-known" className="h3">
+                확인된 조건
               </h3>
-              {result.shapes.length ? (
-                <ul role="list" className="cand-list">
-                  {result.shapes.map((s) => (
-                    <li key={s.id}>
-                      <strong>{s.label}</strong>
-                      <span className="small muted">{s.reason}</span>
+              <dl className="kv">
+                {brief.known.map(([k, v]) => (
+                  <div key={k}>
+                    <dt>{k}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
+            <section className="result-card" aria-labelledby="r-needed">
+              <h3 id="r-needed" className="h3">
+                아직 필요한 정보 <span className="tag">{brief.needed.length}개</span>
+              </h3>
+              {brief.needed.length ? (
+                <ul role="list" className="needed-list">
+                  {brief.needed.map((n) => (
+                    <li key={n.item}>
+                      <strong>{n.item}</strong>
+                      <span className="small muted">{n.why}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="muted">담당자 검토 후 안내드립니다.</p>
+                <p className="muted">상담에 필요한 기본 정보가 모두 입력되었습니다.</p>
               )}
             </section>
-            <section className="result-card" aria-labelledby="r-materials">
-              <h3 id="r-materials" className="h3">
-                검토 후보 소재
-              </h3>
-              {result.materials.length ? (
-                <ul role="list" className="cand-list">
-                  {result.materials.map((m) => (
-                    <li key={m.id}>
-                      <strong>{m.label}</strong>
-                      <span className="small muted">{m.reason}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="muted">담당자 검토 후 안내드립니다.</p>
-              )}
-            </section>
-            <section className="result-card result-card--wide" aria-labelledby="r-missing">
-              <h3 id="r-missing" className="h3">
-                확인이 필요한 규격 <span className="tag">{result.missing.length}개</span>
-              </h3>
-              {result.missing.length ? (
-                <>
-                  <p className="small muted">
-                    아래 항목은 담당자가 다시 여쭤볼 내용입니다. 미리 준비해 주시면 견적이 빨라집니다.
-                  </p>
-                  <ul role="list" className="check-list">
-                    {result.missing.map((m) => (
-                      <li key={m}>{m}</li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <p className="muted">필요한 기본 정보가 모두 입력되었습니다.</p>
-              )}
-            </section>
-            {result.cautions.length > 0 && (
-              <section className="result-card result-card--wide" aria-labelledby="r-cautions">
-                <h3 id="r-cautions" className="h3">
-                  기술 검토가 필요한 사항
+
+            {brief.reviewPoints.length > 0 && (
+              <section className="result-card result-card--wide" aria-labelledby="r-review">
+                <h3 id="r-review" className="h3">
+                  기술 검토 포인트
                 </h3>
+                <p className="small muted">대표가 소재·구조를 정할 때 확인할 항목입니다.</p>
                 <ul className="caution-list">
-                  {result.cautions.map((c) => (
-                    <li key={c}>{c}</li>
+                  {brief.reviewPoints.map((p) => (
+                    <li key={p}>{p}</li>
                   ))}
                 </ul>
               </section>
             )}
+
+            {brief.prepare.length > 0 && (
+              <section className="result-card result-card--wide" aria-labelledby="r-prepare">
+                <h3 id="r-prepare" className="h3">
+                  함께 보내 주시면 좋은 자료
+                </h3>
+                <ul role="list" className="check-list">
+                  {brief.prepare.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            <section className="result-card result-card--wide" aria-labelledby="r-similar">
+              <h3 id="r-similar" className="h3">
+                유사 적용 분야
+              </h3>
+              {brief.similar.length ? (
+                <ul role="list" className="similar-list">
+                  {brief.similar.map((s) => (
+                    <li key={s.id}>
+                      <strong>{s.title}</strong>
+                      <span className="small muted">{s.summary}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="notice notice--warning">
+                  <p className="notice__title">등록된 유사 적용 분야가 없습니다</p>
+                  <p>
+                    처음 보는 공정이어도 개발할 수 있습니다. 의뢰서를 그대로 보내 주시면 대표가 직접 검토합니다.{" "}
+                    <Link href="/applications/">적용 분야 전체 보기</Link>
+                  </p>
+                </div>
+              )}
+            </section>
           </div>
 
           <section className="summary-box" aria-labelledby="r-summary">
             <h3 id="r-summary" className="h3">
-              문의 요약
+              의뢰서 보내기
             </h3>
             <p className="small muted">
-              이 내용을 복사해 카카오톡 채널이나 메일로 보내 주세요. 회사명·담당자·연락처는 보내실 때 직접 적어
-              주세요. 이 사이트는 요약을 저장하거나 자동 전송하지 않습니다.
+              아래 내용을 복사해 카카오톡 채널이나 메일로 보내 주세요. 회사명·담당자·연락처는 보내실 때 직접 적어
+              주세요. 이 사이트는 의뢰서를 저장하거나 자동 전송하지 않습니다.
             </p>
             <label htmlFor="summary-text" className="sr-only">
-              문의 요약 내용
+              개발 의뢰서 내용
             </label>
             <textarea id="summary-text" ref={summaryRef} className="summary-text" readOnly value={summary} rows={14} />
 
@@ -600,16 +592,16 @@ export function BrushFinder() {
             {copyState === "failed" && (
               <div className="notice notice--danger">
                 <p className="notice__title">자동 복사에 실패했습니다</p>
-                <p>브라우저가 복사를 허용하지 않았습니다. 위 요약 상자가 선택되어 있으니 Ctrl+C로 직접 복사해 주세요.</p>
+                <p>브라우저가 복사를 허용하지 않았습니다. 위 의뢰서 상자가 선택되어 있으니 Ctrl+C로 직접 복사해 주세요.</p>
               </div>
             )}
 
             <div className="btn-row finder__actions">
               <button type="button" className="btn btn--primary btn--lg" onClick={() => void onCopy()}>
-                요약 복사
+                의뢰서 복사
               </button>
               <a className="btn btn--kakao btn--lg" href={company.kakaoChat} target="_blank" rel="noopener noreferrer">
-                카카오톡으로 상담<span className="sr-only"> (새 창)</span>
+                카카오톡으로 보내기<span className="sr-only"> (새 창)</span>
               </a>
               <a className="btn btn--secondary btn--lg" href={buildMailto(summary)}>
                 메일로 보내기
@@ -617,12 +609,12 @@ export function BrushFinder() {
             </div>
             <ol className="handoff-steps small">
               <li>
-                <strong>요약 복사</strong>를 누릅니다.
+                <strong>의뢰서 복사</strong>를 누릅니다.
               </li>
               <li>
-                <strong>카카오톡으로 상담</strong>을 눌러 채널 채팅창을 엽니다.
+                <strong>카카오톡으로 보내기</strong>를 눌러 채널 채팅창을 엽니다.
               </li>
-              <li>붙여 넣은 뒤 회사명·연락처를 적고, 사진·도면이 있으면 함께 보냅니다.</li>
+              <li>붙여 넣은 뒤 회사명·연락처를 적고, 사진·영상이 있으면 함께 보냅니다.</li>
             </ol>
           </section>
 

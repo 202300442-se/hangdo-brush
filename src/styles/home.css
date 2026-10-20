@@ -239,3 +239,7 @@
   display: grid;
   gap: var(--space-4);
 }
+
+.home-more {
+  margin-top: var(--space-5);
+}

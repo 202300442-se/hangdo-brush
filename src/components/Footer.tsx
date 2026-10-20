@@ -27,7 +27,7 @@ export function Footer() {
         <div className="site-footer__notes small">
           <p>
             이 사이트는 2026학년도 2학기 중간 MVP 배포본입니다. 주문조회는 데모 데이터이며,
-            제작상담 추천은 기술 검토 전 데모 규칙을 사용합니다.
+            AI 개발 의뢰서는 AI 모델 없이 규칙 기반으로 내용을 정리합니다.
           </p>
           <p>
             개인정보를 수집·저장하지 않습니다. <Link href="/contact/#privacy">자세히</Link>

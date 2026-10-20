@@ -6,8 +6,8 @@ import { categoryLabel, photos, type PhotoCategory } from "@/data/photos";
 import "@/styles/pages.css";
 
 export const metadata: Metadata = {
-  title: "제품",
-  description: "항도제일특수브러쉬가 제작한 롤 브러쉬, 휠 브러쉬, 컵 브러쉬와 제작 공정 사진.",
+  title: "개발 사례",
+  description: "항도제일특수브러쉬가 고객 공정에 맞춰 개발·제작한 브러쉬와 제작 공정 사진.",
 };
 
 const order: PhotoCategory[] = ["roll", "wheel", "cup", "core", "process"];
@@ -15,10 +15,10 @@ const order: PhotoCategory[] = ["roll", "wheel", "cup", "core", "process"];
 export default function ProductsPage() {
   return (
     <>
-      <PageHead eyebrow="Products" title="제작 사례">
+      <PageHead eyebrow="Cases" title="개발 사례">
         <p className="lead">
-          항도제일특수브러쉬가 직접 제작한 제품 사진입니다. 대부분 고객 공정에 맞춘 주문제작품이며, 같은 형태라도
-          치수·소재·모 배열은 주문마다 달라집니다.
+          항도제일특수브러쉬가 직접 개발·제작한 브러쉬입니다. 기성품이 아니라 고객 공정에 맞춰 만든 것이므로, 같은
+          모양이라도 치수·소재·모 배열은 의뢰마다 다릅니다.
         </p>
         <div className="notice notice--warning">
           <p className="notice__title">제품 분류·소재 정보 확인 중</p>
@@ -69,10 +69,10 @@ export default function ProductsPage() {
 
       <section className="section section--dark on-dark">
         <div className="container contact-cta">
-          <h2 className="h2">어떤 브러쉬가 맞는지 모르겠다면</h2>
-          <p className="lead">작업 목적과 환경만 알려주세요. 검토 후보와 확인할 규격을 정리해 드립니다.</p>
+          <h2 className="h2">우리 공정에 맞는 브러쉬가 필요하다면</h2>
+          <p className="lead">해결하려는 문제만 알려주세요. 대표가 검토할 수 있는 개발 의뢰서로 정리해 드립니다.</p>
           <Link href="/finder/" className="btn btn--primary btn--lg">
-            AI 제작상담 시작
+            AI 개발 의뢰서 작성
           </Link>
         </div>
       </section>

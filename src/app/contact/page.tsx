@@ -14,8 +14,8 @@ export default function ContactPage() {
     <>
       <PageHead eyebrow="Contact" title="문의하기">
         <p className="lead">
-          제작 문의는 카카오톡 채널로 가장 빠르게 받습니다. 무엇을 적어야 할지 모르시면 먼저 AI 제작상담으로 요약을
-          만들어 보내 주세요.
+          제작 문의는 카카오톡 채널로 가장 빠르게 받습니다. 무엇을 적어야 할지 모르시면 먼저 AI 개발 의뢰서로 내용을
+          정리해 보내 주세요.
         </p>
       </PageHead>
 
@@ -29,8 +29,8 @@ export default function ContactPage() {
             </a>
           </article>
           <article className="contact-card">
-            <h2 className="h3">AI 제작상담</h2>
-            <p className="muted">브러쉬 이름을 몰라도 질문에 답하면 문의 요약이 만들어집니다.</p>
+            <h2 className="h3">AI 개발 의뢰서</h2>
+            <p className="muted">브러쉬 이름을 몰라도 질문에 답하면 대표가 바로 검토할 의뢰서가 만들어집니다.</p>
             <Link className="btn btn--primary btn--lg" href="/finder/">
               상담 시작
             </Link>
@@ -72,7 +72,7 @@ export default function ContactPage() {
               방문 분석 도구도 사용하지 않습니다.
             </li>
             <li>
-              AI 제작상담에 입력한 내용은 사용자의 브라우저 안에서만 처리되며, &lsquo;요약 복사&rsquo; 후 사용자가 직접
+              AI 개발 의뢰서에 입력한 내용은 사용자의 브라우저 안에서만 처리되며, &lsquo;의뢰서 복사&rsquo; 후 사용자가 직접
               카카오톡·메일로 보낼 때에만 회사에 전달됩니다.
             </li>
             <li>카카오톡·메일로 보낸 내용은 각 서비스의 개인정보 처리방침을 따릅니다.</li>

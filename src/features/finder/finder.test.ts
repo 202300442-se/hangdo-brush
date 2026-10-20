@@ -1,107 +1,97 @@
 import { describe, expect, it } from "vitest";
-import { brushRules } from "@/data/brush-rules";
-import { recommend, missingSpecs } from "./engine";
+import { matchApplications } from "@/data/applications";
+import { buildBrief, neededInfo } from "./engine";
 import { buildMailto, buildSummary } from "./summary";
 import { emptyAnswers, type FinderAnswers } from "./types";
 import { firstInvalidStep, validateStep } from "./validation";
 
-const TODAY = new Date("2026-10-20T09:00:00+09:00");
+const TODAY = new Date("2026-10-20T21:00:00+09:00");
 const base = (p: Partial<FinderAnswers>): FinderAnswers => ({ ...emptyAnswers, ...p });
 
-describe("추천 엔진", () => {
-  it("T-U01 녹 제거 + 철 → 와이어 롤/휠, 스틸 와이어 후보", () => {
-    const r = recommend(base({ purpose: "rust", target: "steel" }), brushRules);
-    expect(r.kind).toBe("matched");
-    expect(r.ruleIds).toEqual(["R01-rust-metal"]);
-    expect(r.shapes.map((s) => s.id)).toEqual(["roll", "wheel"]);
-    expect(r.materials.map((m) => m.id)).toContain("steel-wire");
+describe("개발 의뢰서 엔진", () => {
+  it("T-U01 가리비 세척 → 의뢰 요약 + 유사 적용 분야 '수산물 세척'", () => {
+    const b = buildBrief(base({ goal: "wash", target: "가리비", outcome: "껍질 손상 없이 뻘 제거" }));
+    expect(b.headline).toBe("가리비 — 세척 (껍질 손상 없이 뻘 제거)용 브러쉬 개발 의뢰");
+    expect(b.similar.map((s) => s.id)).toEqual(["seafood"]);
+    expect(b.known).toContainEqual(["대상물", "가리비"]);
   });
 
-  it("T-U02 '기타' 목적은 일치 규칙이 없어 빈 결과(unmatched)", () => {
-    const r = recommend(base({ purpose: "other", purposeOther: "특수 공정", target: "steel" }), brushRules);
-    expect(r.kind).toBe("unmatched");
-    expect(r.shapes).toHaveLength(0);
-    expect(r.missing.length).toBeGreaterThan(0);
+  it("T-U02 유사 적용 분야가 없으면 빈 배열 (빈 결과)", () => {
+    const b = buildBrief(base({ goal: "other", goalOther: "반도체 웨이퍼 이송", target: "웨이퍼 캐리어" }));
+    expect(b.similar).toHaveLength(0);
+    expect(b.needed.length).toBeGreaterThan(0);
   });
 
-  it("T-U03 모든 기술 질문에 '잘 모르겠습니다'를 골라도 결과와 확인 필요 규격이 나온다", () => {
-    const r = recommend(
-      base({
-        purpose: "wash",
-        target: "conveyor",
-        industry: "unknown",
-        motion: "unknown",
-        shape: "unknown",
-        currentBrush: "unknown",
-        sizeUnknown: true,
-        environments: ["unknown"],
-        material: "unknown",
-      }),
-      brushRules,
+  it("T-U03 기술 질문을 모두 '잘 모르겠습니다'로 답해도 의뢰서가 만들어지고, 필요한 정보가 이유와 함께 정리된다", () => {
+    const b = buildBrief(
+      base({ goal: "dewater", target: "냉연 강판", method: "unknown", motion: "unknown", environments: ["unknown"], sensitivity: "unknown", sizeUnknown: true }),
     );
-    expect(r.kind).toBe("matched");
-    expect(r.missing).toEqual(
-      expect.arrayContaining(["외경 (브러쉬 바깥 지름)", "설치·회전 방식", "사용 환경 (물·약품·온도 등)"]),
-    );
+    const items = b.needed.map((n) => n.item);
+    expect(items).toEqual(expect.arrayContaining(["현재 작업 방식", "사용 환경 (물·약품·온도·식품 접촉)", "장착 공간·치수"]));
+    expect(b.needed.every((n) => n.why.length > 10)).toBe(true);
+    expect(b.similar.map((s) => s.id)).toContain("steel-water");
   });
 
-  it("T-U04 고객이 고른 소재가 규칙과 다르면 '적합성 검토 필요'로 표시", () => {
-    const r = recommend(base({ purpose: "food", target: "food", material: "steel-wire" }), brushRules);
-    expect(r.materials[0]).toMatchObject({ id: "steel-wire" });
-    expect(r.materials[0].reason).toContain("검토가 필요");
-    expect(r.cautions.some((c) => c.includes("금속 와이어"))).toBe(true);
+  it("T-U04 소재를 추천하지 않고, 조건은 '검토 대상'으로만 표시한다", () => {
+    const b = buildBrief(base({ goal: "wash", target: "무", environments: ["water", "food"], sensitivity: "delicate", materialWish: "PP" }));
+    expect(b.reviewPoints.some((p) => p.includes("식품 직접 접촉"))).toBe(true);
+    expect(b.reviewPoints.some((p) => p.includes('희망 소재 "PP"') && p.includes("대표가 검토"))).toBe(true);
+    expect(JSON.stringify(b)).not.toMatch(/추천 소재|를 추천합니다/);
   });
 
-  it("T-U05 고정형이면 RPM을 확인 필요 항목에서 뺀다", () => {
-    expect(missingSpecs(base({ motion: "fixed" }))).not.toContain("회전 속도 (RPM)");
-    expect(missingSpecs(base({ motion: "rotary" }))).toContain("회전 속도 (RPM)");
+  it("T-U05 회전형일 때만 RPM을 필요 정보로 묻는다", () => {
+    const items = (p: Partial<FinderAnswers>) => neededInfo(base(p)).map((n) => n.item);
+    expect(items({ motion: "rotary" })).toContain("회전 속도 (RPM)");
+    expect(items({ motion: "fixed" })).not.toContain("회전 속도 (RPM)");
+  });
+});
+
+describe("적용 분야 매칭", () => {
+  it("T-U06 한 글자 검색어 '무'는 단어로만 일치 ('무엇'에는 걸리지 않음)", () => {
+    expect(matchApplications("세척 전 무를 씻어야 함").map((a) => a.id)).toContain("produce");
+    expect(matchApplications("무엇을 닦아야 할지").map((a) => a.id)).not.toContain("produce");
+  });
+  it("T-U07 기차·버스·신발 문장에서 해당 분야를 찾는다", () => {
+    expect(matchApplications("지하철 전동차 외판").map((a) => a.id)).toContain("railway");
+    expect(matchApplications("시내버스 세척기").map((a) => a.id)).toContain("bus");
+    expect(matchApplications("운동화 밑창").map((a) => a.id)).toContain("shoes");
   });
 });
 
 describe("입력 검증", () => {
-  it("T-U06 필수(작업 목적·대상물) 누락 시 1단계 오류", () => {
+  it("T-U08 필수(작업 목적·대상) 누락 시 1단계 오류", () => {
     const e = validateStep(0, emptyAnswers, TODAY);
-    expect(e.purpose).toBeTruthy();
+    expect(e.goal).toBeTruthy();
     expect(e.target).toBeTruthy();
     expect(firstInvalidStep(emptyAnswers, TODAY)).toBe(0);
   });
-
-  it("T-U07 '기타' 선택 후 내용을 비우면 오류", () => {
-    expect(validateStep(0, base({ purpose: "other", target: "steel" }), TODAY).purposeOther).toBeTruthy();
+  it("T-U09 공백만 입력한 대상, '기타' 후 빈 내용은 오류", () => {
+    expect(validateStep(0, base({ goal: "wash", target: "   " }), TODAY).target).toBeTruthy();
+    expect(validateStep(0, base({ goal: "other", target: "무" }), TODAY).goalOther).toBeTruthy();
+    expect(validateStep(0, base({ goal: "wash", target: "무" }), TODAY)).toEqual({});
   });
-
-  it("T-U08 치수에 문자·음수·내경≥외경 입력 시 안내", () => {
+  it("T-U10 치수 문자·음수·내경≥외경, 치수 모름이면 건너뜀", () => {
     expect(validateStep(2, base({ outerDiameter: "abc" }), TODAY).outerDiameter).toContain("숫자만");
     expect(validateStep(2, base({ outerDiameter: "-5" }), TODAY).outerDiameter).toBeTruthy();
     expect(validateStep(2, base({ outerDiameter: "100", innerDiameter: "120" }), TODAY).innerDiameter).toContain("작아야");
-  });
-
-  it("T-U09 치수를 모른다고 체크하면 치수 검증을 건너뛴다", () => {
     expect(validateStep(2, base({ sizeUnknown: true, outerDiameter: "abc" }), TODAY)).toEqual({});
   });
-
-  it("T-U10 수량 소수·과거 납기 입력 시 안내", () => {
+  it("T-U11 수량 소수·과거 납기 안내, 정상 입력은 통과", () => {
     const e = validateStep(3, base({ quantity: "2.5", dueDate: "2026-10-01" }), TODAY);
     expect(e.quantity).toContain("정수");
     expect(e.dueDate).toContain("이전");
-  });
-
-  it("T-U11 정상 입력은 오류 없음", () => {
-    const a = base({ purpose: "rust", target: "steel", outerDiameter: "200", innerDiameter: "50", quantity: "10", dueDate: "2026-11-30" });
-    expect(firstInvalidStep(a, TODAY)).toBe(-1);
+    expect(firstInvalidStep(base({ goal: "wash", target: "버스", quantity: "4", dueDate: "2026-12-01" }), TODAY)).toBe(-1);
   });
 });
 
-describe("문의 요약", () => {
-  it("T-U12 요약에 미확인 항목·면책 문구·회사명이 포함된다", () => {
-    const a = base({ purpose: "rust", target: "steel" });
-    const s = buildSummary(a, recommend(a, brushRules), TODAY);
-    expect(s).toContain("항도제일특수브러쉬");
-    expect(s).toContain("작업 목적: 녹·스케일 제거");
-    expect(s).toContain("수량: 미확인");
-    expect(s).toContain("기술 담당자 검토 후 확정");
+describe("의뢰서 텍스트", () => {
+  it("T-U12 요약에 의뢰 요약·필요 정보·대표 제안 문구가 포함된다", () => {
+    const s = buildSummary(buildBrief(base({ goal: "wash", target: "버스 차체" })), "", TODAY);
+    expect(s).toContain("[항도제일특수브러쉬 브러쉬 개발 의뢰서] 2026-10-20");
+    expect(s).toContain("버스 차체 — 세척용 브러쉬 개발 의뢰");
+    expect(s).toContain("아직 확인이 필요한 정보");
+    expect(s).toContain("대표가 직접 제안");
   });
-
   it("T-U13 긴 요약은 mailto 본문을 줄인다", () => {
     const url = buildMailto("가".repeat(3000));
     expect(url.startsWith("mailto:hokim18@nate.com?subject=")).toBe(true);
