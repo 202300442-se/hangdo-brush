@@ -19,7 +19,7 @@ export default function Home() {
       <section className="hero on-dark" aria-labelledby="hero-title">
         <HeroMedia />
         <div className="hero__shade" aria-hidden="true" />
-        <div className="container hero__inner hero-parallax">
+        <div className="container hero__inner">
           <p className="hero__kicker">Since {company.founded} · Busan, Korea</p>
           <h1 id="hero-title" className="hero__title">
             <span className="hero__line">산업 현장의 문제를 해결하는</span>
@@ -83,9 +83,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="panel__media scroll-zoom">
-            <span className="spin-on-scroll">
-              <Photo id="wheel-knot-hangdo-mark" sizes="(min-width: 880px) 50vw, 100vw" />
-            </span>
+            <Photo id="wheel-knot-hangdo-mark" sizes="(min-width: 880px) 50vw, 100vw" />
           </div>
         </div>
       </section>
@@ -131,20 +129,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 반대 방향으로 흐르는 문구 띠 (장식) */}
-      <div className="ticker" aria-hidden="true" translate="no">
-        <div className="ticker__track">
-          <span>CUSTOM BRUSH ENGINEERING</span>
-          <span className="ticker__dot">●</span>
-          <span>맞춤형 산업용 브러쉬 개발</span>
-          <span className="ticker__dot">●</span>
-          <span>DESIGN · MANUFACTURE · SUPPORT</span>
-          <span className="ticker__dot">●</span>
-          <span>CUSTOM BRUSH ENGINEERING</span>
-          <span className="ticker__dot">●</span>
-          <span>맞춤형 산업용 브러쉬 개발</span>
+      {/* 스크롤하면 사진이 화면 가득 펼쳐짐 */}
+      <section className="expand" aria-labelledby="expand-title">
+        <div className="expand__frame">
+          <Photo id="roll-blue-filament-stack" sizes="100vw" decorative />
+          <div className="expand__caption on-dark">
+            <p className="expand__label">Custom Brush Engineering</p>
+            <h2 id="expand-title" className="expand__title">
+              맞춤형 산업용 브러쉬 개발
+            </h2>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* 04 제작문의 — 하단에 두 가지 선택지 */}
       <section className="panel inquiry" aria-labelledby="inquiry-title">
@@ -161,6 +157,7 @@ export default function Home() {
               <span className="inquiry-option__photo" aria-hidden="true">
                 <Photo id="machine-knot-detail" sizes="(min-width: 760px) 50vw, 100vw" decorative />
               </span>
+              <span className="inquiry-option__glass" aria-hidden="true" />
               <span className="inquiry-option__label">전화 상담</span>
               <span className="inquiry-option__value">{company.phone}</span>
               <span className="inquiry-option__desc">기술 전문가와의 빠른 상담</span>
@@ -169,6 +166,7 @@ export default function Home() {
               <span className="inquiry-option__photo" aria-hidden="true">
                 <Photo id="roll-abrasive-grey" sizes="(min-width: 760px) 50vw, 100vw" decorative />
               </span>
+              <span className="inquiry-option__glass" aria-hidden="true" />
               <span className="inquiry-option__label">AI 제작상담</span>
               <span className="inquiry-option__value">
                 의뢰서 작성 <span className="inquiry-option__arrow" aria-hidden="true">→</span>

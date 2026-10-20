@@ -382,7 +382,8 @@ textarea {
 .btn--arrow:hover,
 .btn--arrow:focus-visible {
   color: var(--white);
-  background: var(--white);
+  background: var(--green-logo);
+  border-color: var(--green-logo);
 }
 .btn__arrow {
   transition: transform 0.4s var(--ease-out);
