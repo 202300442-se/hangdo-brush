@@ -3,8 +3,31 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgb(255 255 255 / 0.96);
-  border-bottom: var(--border-1);
+  background: rgb(255 255 255 / 0.97);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--dur-base), border-color var(--dur-base);
+}
+/* 홈 첫 화면: 배경 영상 위에 투명하게 */
+.site-header--overlay {
+  background: transparent;
+  border-bottom-color: rgb(255 255 255 / 0.18);
+}
+.site-header--overlay .site-nav__link {
+  color: rgb(255 255 255 / 0.85);
+}
+.site-header--overlay .site-nav__link:hover,
+.site-header--overlay .site-nav__link[aria-current="page"] {
+  color: var(--white);
+  border-bottom-color: var(--white);
+}
+.site-header--overlay .site-nav__cta {
+  background: var(--white);
+  color: var(--black);
+}
+.site-header--overlay .nav-toggle__bar,
+.site-header--overlay .nav-toggle__bar::before,
+.site-header--overlay .nav-toggle__bar::after {
+  background: var(--white);
 }
 .site-header__inner {
   display: flex;
@@ -20,35 +43,39 @@
   text-decoration: none;
   min-width: 0;
 }
-.brand__mark {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent);
-  color: var(--white);
-  font-weight: var(--fw-black);
-  font-size: 0.95rem;
-  letter-spacing: -0.02em;
-}
-.brand__text {
-  display: grid;
-  line-height: 1.2;
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   min-width: 0;
 }
-.brand__ko {
+.logo svg {
+  flex: none;
+}
+.logo__text {
+  display: grid;
+  line-height: 1.15;
+  min-width: 0;
+}
+.logo__ko {
+  font-size: 1.1rem;
   font-weight: var(--fw-bold);
-  font-size: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
   white-space: nowrap;
 }
-.brand__en {
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
+.logo__en {
+  font-size: 0.66rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.02em;
+  color: var(--gray-700);
   white-space: nowrap;
+}
+.logo--inverse .logo__ko {
+  color: var(--white);
+}
+.logo--inverse .logo__en {
+  color: rgb(255 255 255 / 0.75);
 }
 
 .nav-toggle {
@@ -122,8 +149,8 @@
 }
 
 @media (max-width: 880px) {
-  .brand__en {
-    display: none;
+  .logo__en {
+    font-size: 0.58rem;
   }
   .nav-toggle {
     display: block;

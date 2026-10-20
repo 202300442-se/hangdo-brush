@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHead } from "@/components/PageHead";
+import { Photo } from "@/components/Photo";
+import { brushTypes } from "@/data/brushTypes";
 import { devProcess } from "@/data/process";
 import { ApplicationSearch } from "@/features/applications/ApplicationSearch";
 import "@/styles/finder.css";
+import "@/styles/home.css";
 import "@/styles/pages.css";
 
 export const metadata: Metadata = {
-  title: "적용 분야 · 개발 프로세스",
+  title: "제품·적용 분야",
   description:
     "철도 차량·버스·신발·수산물·농산물 세척, 철강 표면 세척과 물기 제거, 연마까지 — 항도제일특수브러쉬가 공정에 맞춰 개발해 온 산업용 브러쉬 적용 분야.",
 };
@@ -23,13 +26,54 @@ export default function ApplicationsPage() {
         </p>
       </PageHead>
 
-      <section className="section">
+      <section className="section" aria-labelledby="types-title">
         <div className="container">
+          <div className="band-head">
+            <p className="eyebrow">Products</p>
+            <h2 id="types-title" className="h2">
+              브러쉬 종류별 적용 분야
+            </h2>
+          </div>
+          <ul role="list" className="type-list">
+            {brushTypes.map((t, i) => (
+              <li key={t.id} id={t.id} className="type-row">
+                <div className="type-row__media">
+                  {t.photo ? (
+                    <Photo id={t.photo} sizes="(min-width: 880px) 360px, 100vw" />
+                  ) : (
+                    <span className="type-row__placeholder">사진 준비 중</span>
+                  )}
+                </div>
+                <div className="type-row__body">
+                  <span className="type-row__num">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="h3">{t.name}</h3>
+                  <p className="muted">{t.structure}</p>
+                  <p className="type-row__label">주요 적용 분야</p>
+                  <ul className="type-row__uses">
+                    {t.uses.map((u) => (
+                      <li key={u}>{u}</li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section section--subtle" aria-labelledby="challenge-title">
+        <div className="container">
+          <div className="band-head">
+            <p className="eyebrow">Process Challenges</p>
+            <h2 id="challenge-title" className="h2">
+              공정별로 풀어야 할 과제
+            </h2>
+          </div>
           <ApplicationSearch />
         </div>
       </section>
 
-      <section className="section section--subtle" aria-labelledby="process-title">
+      <section className="section" aria-labelledby="process-title">
         <div className="container">
           <div className="section-head">
             <p className="eyebrow">Development Process</p>

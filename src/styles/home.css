@@ -1,70 +1,130 @@
-/* ---------- Hero ---------- */
+/* ---------- Hero: 전체 화면 배경 영상 ---------- */
 .hero {
-  padding-block: var(--space-8) var(--space-9);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin-top: calc(var(--header-h) * -1);
+  padding: calc(var(--header-h) + var(--space-8)) 0 var(--space-9);
   overflow: hidden;
+  background: var(--black);
+  color: var(--white);
+}
+.hero-media,
+.hero__shade {
+  position: absolute;
+  inset: 0;
+}
+.hero-media__video,
+.hero-media__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* 회사 영상이 들어오기 전: 공장 사진 4장을 천천히 확대하며 교차 (20초 반복) */
+.hero-media__frame {
+  opacity: 0;
+  animation: hero-kenburns 20s linear infinite;
+  will-change: opacity, transform;
+}
+@keyframes hero-kenburns {
+  0% {
+    opacity: 0;
+    transform: scale(1.14);
+  }
+  6% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 1;
+  }
+  31% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
+.hero-media.is-static .hero-media__frame {
+  animation: none;
+  opacity: 0;
+}
+.hero-media.is-static .hero-media__frame:first-child {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-media__frame {
+    animation: none;
+  }
+  .hero-media__frame:first-child {
+    opacity: 1;
+  }
+}
+.hero__shade {
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.15) 35%, rgb(0 0 0 / 0.7) 100%),
+    linear-gradient(90deg, rgb(0 0 0 / 0.45) 0%, rgb(0 0 0 / 0) 70%);
 }
 .hero__inner {
-  display: grid;
-  gap: var(--space-7);
-}
-.hero__title {
-  display: grid;
-  gap: 0.1em;
-  font-size: clamp(2.6rem, 0.8rem + 8.4vw, 8.5rem);
-  font-weight: var(--fw-black);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  color: var(--black);
-}
-.hero__line {
-  display: flex;
-  align-items: center;
-  gap: 0.25em;
-  white-space: nowrap;
-}
-.hero__capsule {
-  flex: none;
-  display: inline-block;
-  width: 1.9em;
-  height: 0.82em;
-}
-.hero__capsule--wide {
-  width: 2.6em;
-}
-.hero__capsule img {
-  transform: scale(1.04);
-  transition: transform 1.2s var(--ease-out);
-}
-.hero__capsule:hover img {
-  transform: scale(1.12);
-}
-.hero__copy {
+  position: relative;
   display: grid;
   gap: var(--space-5);
-  max-width: 640px;
-  margin-left: auto;
 }
-.hero__ko {
-  font-size: var(--fs-h3);
+.hero__kicker {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 0.8);
+}
+.hero__title {
+  max-width: 16em;
+  font-size: clamp(2rem, 1.1rem + 3.9vw, 4.75rem);
+  font-weight: var(--fw-black);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.hero__en {
+  font-size: clamp(0.8rem, 0.7rem + 0.4vw, 1rem);
   font-weight: var(--fw-bold);
-  line-height: var(--lh-snug);
+  letter-spacing: 0.18em;
+  color: var(--green-logo);
+}
+.hero__cta {
+  margin-top: var(--space-3);
+}
+.hero .btn--primary {
+  background: var(--white);
+  color: var(--black);
+}
+.hero .btn--primary:hover {
+  background: var(--green-100);
+}
+.hero__scroll {
+  position: absolute;
+  right: var(--gutter);
+  bottom: var(--space-6);
+  writing-mode: vertical-rl;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.3em;
+  color: rgb(255 255 255 / 0.7);
+  text-decoration: none;
 }
 @media (max-width: 560px) {
-  .hero__capsule {
-    width: 1.5em;
-  }
-  .hero__capsule--wide {
-    width: 1.7em;
-  }
-  .hero__copy .btn {
+  .hero__cta .btn {
     flex: 1 1 100%;
+  }
+  .hero__scroll {
+    display: none;
   }
 }
 
 /* ---------- Statement ---------- */
-.statement {
-  border-top: var(--border-1);
-}
 .statement__grid {
   display: grid;
   gap: var(--space-7);
@@ -72,11 +132,8 @@
 @media (min-width: 880px) {
   .statement__grid {
     grid-template-columns: 1.1fr 1fr;
-    align-items: end;
+    align-items: start;
   }
-}
-.statement__title {
-  margin-top: var(--space-4);
 }
 .statement__body {
   display: grid;
@@ -104,9 +161,82 @@
   letter-spacing: -0.02em;
 }
 
+/* ---------- Section head (구분선 없이 큰 제목만) ---------- */
+.band-head {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-7);
+}
+
+/* ---------- Brush types (사진 중심 타일) ---------- */
+.products-band {
+  background: var(--black);
+}
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 2px;
+}
+.type-tile__link {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  color: var(--white);
+  text-decoration: none;
+  background: var(--charcoal);
+}
+.type-tile__media,
+.type-tile__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.type-tile__media img {
+  transition: transform 1.2s var(--ease-out);
+}
+.type-tile__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0) 30%, rgb(0 0 0 / 0.82) 100%);
+}
+.type-tile__media--plain {
+  background: linear-gradient(135deg, var(--green-900), var(--charcoal) 70%);
+}
+.type-tile__link:hover img {
+  transform: scale(1.06);
+}
+.type-tile__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-5);
+}
+.type-tile__num {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  color: var(--green-logo);
+}
+.type-tile__name {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-black);
+  letter-spacing: -0.02em;
+}
+.type-tile__uses {
+  font-size: var(--fs-sm);
+  color: rgb(255 255 255 / 0.78);
+}
+
 /* ---------- Finder promo ---------- */
 .finder-promo {
-  background: var(--green-950);
+  background: var(--color-bg-subtle);
 }
 .finder-promo__grid {
   display: grid;
@@ -123,23 +253,16 @@
     align-items: center;
   }
 }
-.finder-promo .btn--primary {
-  background: var(--white);
-  color: var(--green-950);
-}
-.finder-promo .btn--primary:hover {
-  background: var(--green-100);
-}
 .promo-steps {
   display: grid;
-  border-top: 1px solid rgb(255 255 255 / 0.25);
+  border-top: 2px solid var(--black);
 }
 .promo-steps li {
   display: flex;
   gap: var(--space-5);
   align-items: baseline;
   padding: var(--space-4) 0;
-  border-bottom: 1px solid rgb(255 255 255 / 0.25);
+  border-bottom: var(--border-1);
   font-size: var(--fs-h3);
   font-weight: var(--fw-bold);
 }
@@ -147,56 +270,46 @@
   flex: none;
   width: 2.2em;
   font-size: var(--fs-sm);
-  color: #8fc4ac;
+  color: var(--color-accent);
   letter-spacing: 0.08em;
 }
 .promo-steps__out {
-  color: #8fc4ac;
-}
-
-/* ---------- Products ---------- */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
-  gap: var(--space-6) var(--space-4);
-}
-.product-card__link {
-  display: grid;
-  gap: var(--space-2);
-  text-decoration: none;
-}
-.product-card__media {
-  aspect-ratio: 4 / 3;
-  margin-bottom: var(--space-3);
-}
-.product-card__media img {
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-.product-card__link:hover img {
-  transform: scale(1.05);
-}
-.product-card__link:hover .product-card__title {
   color: var(--color-accent);
 }
 
-/* ---------- Tech ---------- */
-.tech {
-  display: grid;
-  gap: var(--space-7);
+/* ---------- Tech band (전체 폭 사진) ---------- */
+.tech-band {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(90vh, 760px);
+  padding-block: var(--space-9);
+  overflow: hidden;
+  color: var(--white);
+  background: var(--black);
 }
-@media (min-width: 880px) {
-  .tech {
-    grid-template-columns: 1.1fr 1fr;
-    align-items: center;
-  }
+.tech-band__media,
+.tech-band__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.tech__media {
-  aspect-ratio: 4 / 3;
-  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+.tech-band__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(0 0 0 / 0.8) 0%, rgb(0 0 0 / 0.35) 60%, rgb(0 0 0 / 0.2) 100%);
 }
-.tech__copy {
+.tech-band__copy {
+  position: relative;
   display: grid;
   gap: var(--space-5);
+}
+.tech-band__copy .lead {
+  color: rgb(255 255 255 / 0.82);
+  max-width: 34em;
 }
 
 /* ---------- Timeline ---------- */
@@ -234,10 +347,6 @@
     grid-template-columns: 1fr auto;
     align-items: end;
   }
-}
-.contact-band > div:first-child {
-  display: grid;
-  gap: var(--space-4);
 }
 
 .home-more {

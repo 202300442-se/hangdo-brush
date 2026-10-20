@@ -5,13 +5,14 @@
    ========================================================= */
 
 :root {
-  /* ---------- Brand: Deep Green (포인트로만 사용) ---------- */
-  --green-950: #082a20;
-  --green-900: #0b382b;
-  --green-800: #124a39;
-  --green-700: #196047;
-  --green-100: #e3ece7;
-  --green-50: #f1f6f3;
+  /* ---------- Brand: 로고 그린(#6FA05F) 계열 — 포인트로만 사용 ---------- */
+  --green-logo: #6fa05f;
+  --green-950: #142312;
+  --green-900: #1d321a;
+  --green-800: #2b4a26;
+  --green-700: #3d6534;
+  --green-100: #e5eee1;
+  --green-50: #f2f6ef;
 
   /* ---------- Neutral ---------- */
   --black: #090b0a;
@@ -36,7 +37,7 @@
   --color-accent: var(--green-800);
   --color-accent-hover: var(--green-900);
   --color-accent-soft: var(--green-50);
-  --color-focus: #1d7a57;
+  --color-focus: #3d7a2f;
 
   --color-success: var(--green-700);
   --color-success-bg: var(--green-50);

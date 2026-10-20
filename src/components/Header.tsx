@@ -4,12 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
+import { Logo } from "./Logo";
 import { finderCta, mainNav } from "@/data/navigation";
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [atTop, setAtTop] = useState(true);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const isHome = pathname === "/" || pathname === "";
+
+  // 홈 첫 화면에서는 영상 위에 투명하게 겹치고, 스크롤하면 흰 배경으로 바뀐다.
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY < 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  const overlay = isHome && atTop && !open;
 
   // 페이지 이동 시 모바일 메뉴 닫기
   useEffect(() => setOpen(false), [pathname]);
@@ -30,15 +42,10 @@ export function Header() {
   const isActive = (href: string) => pathname?.startsWith(href.replace(/\/$/, ""));
 
   return (
-    <header className="site-header">
+    <header className={`site-header${overlay ? " site-header--overlay on-dark" : ""}`}>
       <div className="container site-header__inner">
         <Link href="/" className="brand" aria-label={`${company.nameKo} 홈`}>
-          {/* TODO: 공식 HJ 로고 파일 수령 후 교체 */}
-          <span className="brand__mark" aria-hidden="true">HJ</span>
-          <span className="brand__text">
-            <span className="brand__ko">{company.nameKo}</span>
-            <span className="brand__en">{company.nameEn}</span>
-          </span>
+          <Logo inverse={overlay} />
         </Link>
 
         <button
