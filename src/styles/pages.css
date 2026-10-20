@@ -283,3 +283,26 @@
   color: var(--color-accent);
   letter-spacing: 0.08em;
 }
+.app-item__title {
+  margin: 0;
+}
+.app-item__challenge {
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+  line-height: var(--lh-snug);
+}
+.app-item__label {
+  margin-top: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+}
+.app-item__points {
+  margin: 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}

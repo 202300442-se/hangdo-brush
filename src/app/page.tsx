@@ -115,6 +115,7 @@ export default function Home() {
               <li key={a.id} className="app-item">
                 <span className="small muted">{a.group}</span>
                 <span className="app-item__title">{a.title}</span>
+                <span className="app-item__challenge">{a.summary}</span>
               </li>
             ))}
           </ul>

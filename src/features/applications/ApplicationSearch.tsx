@@ -69,8 +69,14 @@ export function ApplicationSearch() {
             <ul role="list" className="app-list">
               {items.map((a) => (
                 <li key={a.id} className="app-item">
-                  <span className="app-item__title">{a.title}</span>
-                  <span className="small muted">{a.summary}</span>
+                  <h3 className="app-item__title">{a.title}</h3>
+                  <p className="app-item__challenge">{a.summary}</p>
+                  <p className="app-item__label">개발 시 검토하는 것</p>
+                  <ul className="app-item__points">
+                    {a.points.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
                 </li>
               ))}
             </ul>
