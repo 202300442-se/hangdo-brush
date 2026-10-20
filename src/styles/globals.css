@@ -352,3 +352,42 @@ textarea {
 .btn--light:hover {
   background: var(--green-100);
 }
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+/* 화살표 버튼: 마우스를 올리면 왼쪽부터 색이 차오르고 화살표가 밀려남 */
+.btn--arrow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-5);
+  font-size: var(--fs-sm);
+  gap: var(--space-3);
+}
+.btn--arrow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--green-logo);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease-out);
+}
+.btn--arrow:hover::before,
+.btn--arrow:focus-visible::before {
+  transform: scaleX(1);
+}
+.btn--arrow:hover,
+.btn--arrow:focus-visible {
+  color: var(--white);
+  background: var(--white);
+}
+.btn__arrow {
+  transition: transform 0.4s var(--ease-out);
+}
+.btn--arrow:hover .btn__arrow,
+.btn--arrow:focus-visible .btn__arrow {
+  transform: translateX(4px);
+}

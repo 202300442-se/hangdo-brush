@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
+import { CountUp } from "@/components/CountUp";
 import { MaterialChips } from "@/components/MaterialChips";
 import { SplitWords } from "@/components/SplitWords";
 import { Photo } from "@/components/Photo";
@@ -56,15 +57,21 @@ export default function Home() {
             <dl className="facts">
               <div>
                 <dt>Since</dt>
-                <dd>{company.founded}</dd>
+                <dd>
+                  <CountUp to={company.founded} from={1950} />
+                </dd>
               </div>
               <div>
                 <dt>Japan Export</dt>
-                <dd>1999</dd>
+                <dd>
+                  <CountUp to={1999} from={1950} />
+                </dd>
               </div>
               <div>
                 <dt>Experience</dt>
-                <dd>30년 이상</dd>
+                <dd>
+                  <CountUp to={30} from={0} />년 이상
+                </dd>
               </div>
               <div>
                 <dt>Made in</dt>
@@ -76,7 +83,9 @@ export default function Home() {
             </Link>
           </div>
           <div className="panel__media scroll-zoom">
-            <Photo id="wheel-knot-hangdo-mark" sizes="(min-width: 880px) 50vw, 100vw" />
+            <span className="spin-on-scroll">
+              <Photo id="wheel-knot-hangdo-mark" sizes="(min-width: 880px) 50vw, 100vw" />
+            </span>
           </div>
         </div>
       </section>
@@ -91,7 +100,7 @@ export default function Home() {
           <h2 id="location-title" className="h1">
             <SplitWords lines={["설계부터 제작까지,", "한 공장에서 완성합니다."]} />
           </h2>
-          <p className="lead">항도제일특수브러쉬의 브러쉬는 부산 강서구 대저동 공장에서 설계되고 만들어집니다.</p>
+          <p className="lead loc-lead">항도제일특수브러쉬, 우리에게 불가능은 없습니다.</p>
           <dl className="loc-list">
             <div>
               <dt>주소</dt>
@@ -111,12 +120,31 @@ export default function Home() {
             </div>
           </dl>
           <div className="btn-row">
-            <a className="btn btn--light btn--lg" href={company.naverMap} target="_blank" rel="noopener noreferrer">
-              네이버지도에서 보기<span className="sr-only"> (새 창)</span>
+            <a className="btn btn--light btn--arrow" href={company.naverMap} target="_blank" rel="noopener noreferrer">
+              <span>네이버지도에서 보기</span>
+              <svg className="btn__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
+              <span className="sr-only"> (새 창)</span>
             </a>
           </div>
         </div>
       </section>
+
+      {/* 반대 방향으로 흐르는 문구 띠 (장식) */}
+      <div className="ticker" aria-hidden="true" translate="no">
+        <div className="ticker__track">
+          <span>CUSTOM BRUSH ENGINEERING</span>
+          <span className="ticker__dot">●</span>
+          <span>맞춤형 산업용 브러쉬 개발</span>
+          <span className="ticker__dot">●</span>
+          <span>DESIGN · MANUFACTURE · SUPPORT</span>
+          <span className="ticker__dot">●</span>
+          <span>CUSTOM BRUSH ENGINEERING</span>
+          <span className="ticker__dot">●</span>
+          <span>맞춤형 산업용 브러쉬 개발</span>
+        </div>
+      </div>
 
       {/* 04 제작문의 — 하단에 두 가지 선택지 */}
       <section className="panel inquiry" aria-labelledby="inquiry-title">
@@ -126,18 +154,26 @@ export default function Home() {
             <h2 id="inquiry-title" className="h1">
               <SplitWords lines={["어떤 브러쉬가 필요한지", "몰라도 괜찮습니다."]} />
             </h2>
-            <p className="lead">편한 방법을 골라 주세요. 전화는 바로 연결되고, AI 제작상담은 2분이면 의뢰서가 만들어집니다.</p>
+            <p className="lead">편한 방법을 골라 주세요. 전화는 바로 연결되며, AI 제작상담은 2분이면 의뢰서가 만들어집니다.</p>
           </div>
           <div className="inquiry__options reveal">
             <a className="inquiry-option" href={`tel:${company.phone}`}>
-              <span className="inquiry-option__label">전화로 바로 상담</span>
+              <span className="inquiry-option__photo" aria-hidden="true">
+                <Photo id="machine-knot-detail" sizes="(min-width: 760px) 50vw, 100vw" decorative />
+              </span>
+              <span className="inquiry-option__label">전화 상담</span>
               <span className="inquiry-option__value">{company.phone}</span>
-              <span className="inquiry-option__desc">담당자와 바로 통화합니다</span>
+              <span className="inquiry-option__desc">기술 전문가와의 빠른 상담</span>
             </a>
             <Link className="inquiry-option inquiry-option--primary" href="/finder/">
+              <span className="inquiry-option__photo" aria-hidden="true">
+                <Photo id="roll-abrasive-grey" sizes="(min-width: 760px) 50vw, 100vw" decorative />
+              </span>
               <span className="inquiry-option__label">AI 제작상담</span>
-              <span className="inquiry-option__value">의뢰서 작성 →</span>
-              <span className="inquiry-option__desc">브러쉬 이름을 몰라도 질문에 답하면 정리됩니다</span>
+              <span className="inquiry-option__value">
+                의뢰서 작성 <span className="inquiry-option__arrow" aria-hidden="true">→</span>
+              </span>
+              <span className="inquiry-option__desc">브러쉬 선택에 도움을 드리겠습니다</span>
             </Link>
           </div>
         </div>

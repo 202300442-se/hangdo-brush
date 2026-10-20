@@ -10,7 +10,9 @@ export function Footer() {
           <p className="site-footer__en">{company.nameEn}</p>
         </div>
         <address className="site-footer__info">
-          <p>대표 {company.ceo}</p>
+          <p>
+            대표 {company.ceo} · 사업자등록번호 <span className="tnum">{company.bizNo}</span>
+          </p>
           <p>{company.address}</p>
           <p>
             전화 <a href={`tel:${company.phone}`}>{company.phone}</a> · 팩스 {company.fax}

@@ -241,3 +241,92 @@
     }
   }
 }
+
+/* =========================================================
+   Detail motion (2026-10-21 2차)
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  /* 찾아오시는 길 주소 줄: 한 줄씩 */
+  .motion-ok .reveal .loc-list > div {
+    opacity: 0;
+    transform: translateX(-24px);
+    transition:
+      opacity 0.8s var(--ease-out),
+      transform 0.8s var(--ease-out);
+  }
+  .motion-ok .reveal.is-visible .loc-list > div {
+    opacity: 1;
+    transform: none;
+  }
+  .motion-ok .reveal.is-visible .loc-list > div:nth-child(1) { transition-delay: 0.4s; }
+  .motion-ok .reveal.is-visible .loc-list > div:nth-child(2) { transition-delay: 0.52s; }
+  .motion-ok .reveal.is-visible .loc-list > div:nth-child(3) { transition-delay: 0.64s; }
+
+  /* 주소 위 구분선이 왼쪽에서 그어짐 */
+  .loc-list {
+    border-top-color: transparent !important;
+    position: relative;
+  }
+  .loc-list::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgb(255 255 255 / 0.35);
+    transform-origin: left center;
+    transform: scaleX(1);
+  }
+  .motion-ok .reveal .loc-list::before {
+    transform: scaleX(0);
+    transition: transform 1.2s var(--ease-out) 0.25s;
+  }
+  .motion-ok .reveal.is-visible .loc-list::before {
+    transform: scaleX(1);
+  }
+
+  /* 제작문의 카드 두 장: 시차를 두고 떠오름 */
+  .motion-ok .inquiry__options.reveal > * {
+    transform: translateY(60px);
+    transition-duration: 1s;
+  }
+  .motion-ok .inquiry__options.reveal.is-visible > * {
+    transform: none;
+  }
+
+  @supports (animation-timeline: view()) {
+    /* 회사소개 휠 브러쉬 사진: 스크롤하면 천천히 회전 */
+    .spin-on-scroll {
+      animation: spin-scroll linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    .spin-on-scroll img {
+      transform: scale(1.18);
+    }
+    @keyframes spin-scroll {
+      from {
+        transform: rotate(-10deg);
+      }
+      to {
+        transform: rotate(10deg);
+      }
+    }
+
+    /* 반대 방향 문구 띠 */
+    .ticker__track {
+      animation: ticker-x linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes ticker-x {
+      from {
+        transform: translateX(-35%);
+      }
+      to {
+        transform: translateX(0%);
+      }
+    }
+  }
+}

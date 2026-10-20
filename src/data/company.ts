@@ -5,6 +5,7 @@ export const company = {
   nameKo: "항도제일특수브러쉬",
   nameEn: "Hangdo Jeil Special Brush",
   ceo: "김종호",
+  bizNo: "605-09-77705",
   founded: 1995,
   address: "부산광역시 강서구 대저2동 2424-1",
   phone: "051-315-4012",

@@ -604,3 +604,113 @@
   color: var(--green-logo);
   -webkit-text-stroke: 0;
 }
+
+/* 어두운 패널의 본문 글자는 밝게 (가독성) */
+.panel--dark .lead,
+.tech-band .lead {
+  color: rgb(255 255 255 / 0.85);
+}
+.loc-lead {
+  font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.45rem);
+  font-weight: var(--fw-semibold);
+  color: var(--white) !important;
+  letter-spacing: -0.01em;
+}
+
+/* 제작문의: 위 여백을 줄여 제목을 위로 */
+.panel.inquiry {
+  align-items: flex-start;
+  min-height: auto;
+  padding-top: calc(var(--section-y) * 0.55);
+}
+
+/* 반대 방향 문구 띠 */
+.ticker {
+  overflow: clip;
+  padding-block: var(--space-5);
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
+}
+.ticker__track {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  width: max-content;
+  font-size: clamp(1.4rem, 0.9rem + 2.4vw, 3rem);
+  font-weight: var(--fw-black);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(23 26 24 / 0.35);
+}
+.ticker__track span:nth-child(3) {
+  color: var(--charcoal);
+  -webkit-text-stroke: 0;
+}
+.ticker__dot {
+  font-size: 0.35em;
+  color: var(--green-logo);
+  -webkit-text-stroke: 0;
+}
+
+/* 제작문의 카드: 마우스를 올리면 사진이 드러나며 글자가 흰색으로 */
+.inquiry-option {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.inquiry-option > :not(.inquiry-option__photo) {
+  position: relative;
+  z-index: 1;
+  transition: color 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.inquiry-option__photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transform: scale(1.12);
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 1.2s var(--ease-out);
+}
+.inquiry-option__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.inquiry-option__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.2) 0%, rgb(0 0 0 / 0.75) 100%);
+}
+.inquiry-option:hover .inquiry-option__photo,
+.inquiry-option:focus-visible .inquiry-option__photo {
+  opacity: 1;
+  transform: scale(1);
+}
+.inquiry-option:hover,
+.inquiry-option:focus-visible {
+  color: var(--white);
+  border-color: transparent;
+}
+.inquiry-option:hover .inquiry-option__value,
+.inquiry-option:focus-visible .inquiry-option__value {
+  transform: translateY(-4px);
+}
+.inquiry-option__arrow {
+  display: inline-block;
+  transition: transform 0.5s var(--ease-out);
+}
+.inquiry-option:hover .inquiry-option__arrow,
+.inquiry-option:focus-visible .inquiry-option__arrow {
+  transform: translateX(8px);
+}
+
+/* 회사소개 사진 래퍼 */
+.spin-on-scroll {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
