@@ -3,15 +3,17 @@
 import { useEffect, useState } from "react";
 import { asset, photoSrc } from "@/lib/asset";
 
-// 메인 배경 영상.
-// - VIDEO_SRC가 있으면 3~5초짜리 회사 영상을 소리 없이 반복 재생한다.
-// - 아직 회사 영상이 없으므로 공장 사진을 천천히 확대·교차하는 시네마틱 배경으로 대신한다.
-// TODO: 회사 원본 영상(브러쉬 회전·제작 장면 3~5초)을 public/videos/hero.mp4 로 넣고 VIDEO_SRC 지정
-const VIDEO_SRC: string | null = null;
-const FRAMES = ["machine-knot-detail", "roll-knot-wire-side", "wire-spools", "roll-abrasive-grey"];
+// 메인 배경 영상
+// - VIDEO_SRC: 회사 실사 사진으로 만든 10초 반복 영상 (scripts/video/make-hero.html 로 생성)
+//   회사 원본 촬영 영상(브러쉬 회전·제작 장면)을 받으면 같은 경로에 교체한다.
+// - 영상 아래에는 사진 교차 배경을 깔아 두어, 영상을 못 불러오거나 '동작 줄이기' 설정이면 사진이 보인다.
+const VIDEO_SRC: string | null = "/videos/hero.mp4";
+const FRAMES = ["roll-abrasive-grey", "machine-knot-detail", "roll-knot-wire-side", "wire-spools"];
 
 export function HeroMedia() {
   const [reduced, setReduced] = useState(false);
+  const [videoOk, setVideoOk] = useState(true);
+
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReduced(mq.matches);
@@ -19,23 +21,6 @@ export function HeroMedia() {
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);
   }, []);
-
-  if (VIDEO_SRC && !reduced) {
-    return (
-      <div className="hero-media" aria-hidden="true">
-        <video
-          className="hero-media__video"
-          src={asset(VIDEO_SRC)}
-          poster={photoSrc(FRAMES[0])}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-      </div>
-    );
-  }
 
   return (
     <div className={`hero-media${reduced ? " is-static" : ""}`} aria-hidden="true">
@@ -50,6 +35,19 @@ export function HeroMedia() {
           fetchPriority={i === 0 ? "high" : undefined}
         />
       ))}
+      {VIDEO_SRC && videoOk && !reduced && (
+        <video
+          className="hero-media__video"
+          src={asset(VIDEO_SRC)}
+          poster={photoSrc(FRAMES[0])}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onError={() => setVideoOk(false)}
+        />
+      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import path from "node:path";
 const ROOT = path.resolve("out");
 const BASE = "/hangdo-brush";
 const PORT = Number(process.env.PORT ?? 4173);
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".webp": "image/webp", ".txt": "text/plain; charset=utf-8", ".json": "application/json", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff2": "font/woff2" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".webp": "image/webp", ".txt": "text/plain; charset=utf-8", ".json": "application/json", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff2": "font/woff2", ".mp4": "video/mp4", ".webm": "video/webm" };
 
 async function resolveFile(urlPath) {
   let p = path.join(ROOT, decodeURIComponent(urlPath));

@@ -334,3 +334,10 @@ textarea {
   opacity: 1;
   transform: none;
 }
+.btn--light {
+  background: var(--white);
+  color: var(--black);
+}
+.btn--light:hover {
+  background: var(--green-100);
+}

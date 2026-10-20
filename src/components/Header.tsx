@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
 import { Logo } from "./Logo";
-import { finderCta, mainNav } from "@/data/navigation";
+import { finderCta, mainNav, orderLink } from "@/data/navigation";
 
 export function Header() {
   const pathname = usePathname();
@@ -74,6 +74,16 @@ export function Header() {
               </li>
             ))}
           </ul>
+          <Link
+            href={orderLink.href}
+            className="site-nav__util"
+            aria-current={isActive(orderLink.href) ? "page" : undefined}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z" fill="none" stroke="currentColor" strokeWidth="2" />
+            </svg>
+            {orderLink.label}
+          </Link>
           <Link href={finderCta.href} className="btn btn--primary site-nav__cta">
             {finderCta.label}
           </Link>

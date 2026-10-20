@@ -1,109 +1,180 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
-import { ORDER_STATUSES, demoOrders, type DemoOrder } from "@/data/demo-orders";
-import { findOrder, normalizeOrderId, validateOrderId } from "@/services/orderTrackingService";
+import { DEMO_CODES, ORDER_STATUSES, type DemoOrder } from "@/data/demo-orders";
+import {
+  LOCK_MS,
+  MAX_FAILURES,
+  lookupOrder,
+  validateLookup,
+  type LookupInputErrors,
+} from "@/services/orderTrackingService";
 
+type SafeOrder = Omit<DemoOrder, "codeHash">;
 type State =
   | { kind: "idle" }
-  | { kind: "invalid"; message: string }
+  | { kind: "invalid"; errors: LookupInputErrors }
   | { kind: "loading" }
-  | { kind: "found"; order: DemoOrder }
-  | { kind: "notfound"; id: string }
+  | { kind: "found"; order: SafeOrder }
+  | { kind: "nomatch" }
+  | { kind: "locked"; until: number }
   | { kind: "error" };
 
 export function OrderTracker() {
-  const [value, setValue] = useState("");
+  const [id, setId] = useState("");
+  const [code, setCode] = useState("");
   const [state, setState] = useState<State>({ kind: "idle" });
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [failures, setFailures] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  const idRef = useRef<HTMLInputElement>(null);
+  const codeRef = useRef<HTMLInputElement>(null);
 
-  const lookup = async (raw: string) => {
-    const invalid = validateOrderId(raw);
-    if (invalid) {
-      setState({ kind: "invalid", message: invalid });
-      inputRef.current?.focus();
+  // 잠금 남은 시간 표시
+  useEffect(() => {
+    if (state.kind !== "locked") return;
+    const t = setInterval(() => {
+      setNow(Date.now());
+      if (Date.now() >= state.until) {
+        setState({ kind: "idle" });
+        setFailures(0);
+      }
+    }, 1000);
+    return () => clearInterval(t);
+  }, [state]);
+
+  const lookup = async (rawId = id, rawCode = code) => {
+    if (state.kind === "locked") return;
+    const errors = validateLookup(rawId, rawCode);
+    if (errors.id || errors.code) {
+      setState({ kind: "invalid", errors });
+      (errors.id ? idRef : codeRef).current?.focus();
       return;
     }
     setState({ kind: "loading" });
     try {
       const simulateError = new URLSearchParams(window.location.search).get("simulate") === "error";
-      const order = await findOrder(raw, { simulateError });
-      setState(order ? { kind: "found", order } : { kind: "notfound", id: normalizeOrderId(raw) });
+      const order = await lookupOrder(rawId, rawCode, { simulateError });
+      if (order) {
+        setFailures(0);
+        setState({ kind: "found", order });
+      } else {
+        const n = failures + 1;
+        setFailures(n);
+        setState(n >= MAX_FAILURES ? { kind: "locked", until: Date.now() + LOCK_MS } : { kind: "nomatch" });
+      }
     } catch {
       setState({ kind: "error" });
     }
   };
 
+  const errors = state.kind === "invalid" ? state.errors : {};
+  const remain = state.kind === "locked" ? Math.max(0, Math.ceil((state.until - now) / 1000)) : 0;
   const status =
     state.kind === "loading"
       ? "주문 정보를 확인하고 있습니다."
       : state.kind === "found"
         ? `주문 ${state.order.id}의 현재 상태는 ${state.order.status}입니다.`
-        : state.kind === "notfound"
-          ? "주문 정보를 찾을 수 없습니다."
-          : state.kind === "error"
-            ? "조회 중 오류가 발생했습니다."
-            : "";
+        : state.kind === "nomatch"
+          ? "주문번호 또는 조회 코드가 맞지 않습니다."
+          : state.kind === "locked"
+            ? "입력이 여러 번 틀려 잠시 조회가 제한되었습니다."
+            : state.kind === "error"
+              ? "조회 중 오류가 발생했습니다."
+              : "";
 
   return (
     <div className="order">
       <p className="sr-only" role="status" aria-live="polite">
         {status}
       </p>
+
       <form
-        className="order__form"
+        className="order-form"
         noValidate
         onSubmit={(e) => {
           e.preventDefault();
-          void lookup(value);
+          void lookup();
         }}
       >
-        <label htmlFor="order-id" className="field__label">
-          주문번호
-        </label>
-        <div className="order__row">
+        <div className="order-form__field">
+          <label htmlFor="order-id">주문번호</label>
           <input
-            ref={inputRef}
+            ref={idRef}
             id="order-id"
             className="input"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              if (state.kind === "invalid") setState({ kind: "idle" });
-            }}
-            placeholder="HJ-DEMO-001"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            placeholder="HJ-0000-000"
             autoComplete="off"
-            aria-invalid={state.kind === "invalid" || undefined}
-            aria-describedby={state.kind === "invalid" ? "order-error" : "order-help"}
+            aria-invalid={errors.id ? true : undefined}
+            aria-describedby={errors.id ? "order-id-error" : undefined}
           />
-          <button type="submit" className="btn btn--primary btn--lg" disabled={state.kind === "loading"}>
-            조회
-          </button>
+          {errors.id && (
+            <p id="order-id-error" className="field__error" role="alert">
+              {errors.id}
+            </p>
+          )}
         </div>
-        {state.kind === "invalid" ? (
-          <p id="order-error" className="field__error" role="alert">
-            {state.message}
-          </p>
-        ) : (
-          <p id="order-help" className="field__help">
-            데모 주문번호:{" "}
-            {demoOrders.map((o, i) => (
-              <span key={o.id}>
-                <button type="button" className="link-btn" onClick={() => { setValue(o.id); void lookup(o.id); }}>
-                  {o.id}
-                </button>
-                {i < demoOrders.length - 1 ? ", " : ""}
-              </span>
-            ))}
-          </p>
-        )}
+        <div className="order-form__field">
+          <label htmlFor="order-code">조회 코드</label>
+          <input
+            ref={codeRef}
+            id="order-code"
+            className="input"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="숫자 6자리"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={7}
+            aria-invalid={errors.code ? true : undefined}
+            aria-describedby={errors.code ? "order-code-error" : "order-code-help"}
+          />
+          {errors.code ? (
+            <p id="order-code-error" className="field__error" role="alert">
+              {errors.code}
+            </p>
+          ) : (
+            <p id="order-code-help" className="order-form__help">
+              주문 확정 시 담당자가 거래처에만 따로 알려 드리는 번호입니다.
+            </p>
+          )}
+        </div>
+        <button
+          type="submit"
+          className="btn btn--primary btn--lg order-form__submit"
+          disabled={state.kind === "loading" || state.kind === "locked"}
+        >
+          조회
+        </button>
       </form>
+
+      <details className="order-demo">
+        <summary>심사·시연용 데모 주문 보기</summary>
+        <ul>
+          {Object.entries(DEMO_CODES).map(([oid, c]) => (
+            <li key={oid}>
+              <button
+                type="button"
+                className="link-btn"
+                onClick={() => {
+                  setId(oid);
+                  setCode(c);
+                  void lookup(oid, c);
+                }}
+              >
+                {oid} / {c}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </details>
 
       {state.kind === "idle" && (
         <div className="order__empty">
-          <p className="h3">조회할 주문번호를 입력해 주세요.</p>
-          <p className="muted">주문번호는 견적·주문 확정 시 안내드립니다. (현재는 데모 번호만 조회됩니다)</p>
+          <p className="h3">주문번호와 조회 코드를 입력해 주세요.</p>
+          <p className="muted">두 값이 모두 맞을 때만 주문 내용이 표시됩니다.</p>
         </div>
       )}
 
@@ -114,13 +185,20 @@ export function OrderTracker() {
         </div>
       )}
 
-      {state.kind === "notfound" && (
+      {state.kind === "nomatch" && (
         <div className="notice notice--warning">
-          <p className="notice__title">주문 정보를 찾을 수 없습니다.</p>
+          <p className="notice__title">주문번호 또는 조회 코드가 맞지 않습니다.</p>
           <p>
-            &lsquo;{state.id}&rsquo;와 일치하는 주문이 없습니다. 주문번호를 다시 확인하거나 담당자에게 문의해 주세요.
-            (전화 <a href={`tel:${company.phone}`}>{company.phone}</a>)
+            안내받은 번호를 다시 확인해 주세요. 계속 조회되지 않으면 담당자에게 문의해 주세요. (전화{" "}
+            <a href={`tel:${company.phone}`}>{company.phone}</a>) · 남은 시도 {MAX_FAILURES - failures}회
           </p>
+        </div>
+      )}
+
+      {state.kind === "locked" && (
+        <div className="notice notice--danger">
+          <p className="notice__title">입력이 {MAX_FAILURES}회 틀려 잠시 조회가 제한되었습니다.</p>
+          <p>{remain}초 후에 다시 시도할 수 있습니다. 번호를 잊으셨다면 담당자에게 문의해 주세요.</p>
         </div>
       )}
 
@@ -129,7 +207,7 @@ export function OrderTracker() {
           <p className="notice__title">조회 중 문제가 발생했습니다.</p>
           <p>잠시 후 다시 시도해 주세요. 급하신 경우 전화로 제작 현황을 안내해 드립니다.</p>
           <div className="btn-row">
-            <button type="button" className="btn btn--primary" onClick={() => void lookup(value)}>
+            <button type="button" className="btn btn--primary" onClick={() => void lookup()}>
               다시 시도
             </button>
             <a className="btn btn--secondary" href={`tel:${company.phone}`}>
@@ -144,7 +222,7 @@ export function OrderTracker() {
   );
 }
 
-function OrderCard({ order }: { order: DemoOrder }) {
+function OrderCard({ order }: { order: SafeOrder }) {
   const doneIndex = ORDER_STATUSES.indexOf(order.status);
   const dateOf = (s: string) => order.history.find((h) => h.status === s)?.date;
   return (

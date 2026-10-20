@@ -1,17 +1,18 @@
-// 항도제일특수브러쉬 HJ 로고 — 기존 홈페이지 로고 화면을 보고 다시 그린 벡터.
-// TODO: 회사 원본 로고 파일(AI/SVG/PNG)을 받으면 public/logo/ 의 원본으로 교체
-// 로고 표기는 원본 그대로 "HANDO JEIL SPECIAL BRUSH"를 따른다.
+// 항도제일특수브러쉬 HJ 로고 — 회사 홈페이지 로고 캡처(2026-10-20 제공)를 그대로 따라 그린 벡터.
+// 구성: 굵은 원 + H + 가로대 가운데에서 내려와 왼쪽 아래 원으로 이어지는 J
+// 색: 캡처에서 추출한 #68A454
+// TODO: 회사 원본 로고 파일(AI/SVG/PNG)을 받으면 교체
 
-export const LOGO_GREEN = "#6FA05F";
+export const LOGO_GREEN = "#68A454";
 
-export function LogoMark({ size = 40, color = LOGO_GREEN }: { size?: number; color?: string }) {
+export function LogoMark({ size = 42, color = LOGO_GREEN }: { size?: number; color?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-      <circle cx="20" cy="20" r="17.2" fill="none" stroke={color} strokeWidth="3.4" />
-      {/* H 왼쪽 기둥 + 가로대 */}
-      <path d="M13.2 10.5V22.6M13.2 17.4H26.6" fill="none" stroke={color} strokeWidth="3.4" />
-      {/* H 오른쪽 기둥이 아래로 내려와 J 갈고리로 휘어짐 */}
-      <path d="M26.6 10.5V25.2C26.6 29.4 23.6 31.6 20 31.6C16.6 31.6 14.2 29.8 13.4 27.4" fill="none" stroke={color} strokeWidth="3.4" />
+    <svg width={size} height={size} viewBox="7 3.5 54 54" aria-hidden="true" focusable="false">
+      <circle cx="34" cy="30.5" r="24.4" fill="none" stroke={color} strokeWidth="4.8" />
+      <rect x="17.5" y="19.5" width="6.5" height="22.5" fill={color} />
+      <rect x="45" y="19.5" width="6.5" height="22.5" fill={color} />
+      <rect x="17.5" y="26.5" width="34" height="6.5" fill={color} />
+      <path d="M35 32V40.5C35 47 30.5 51.2 23.5 52" fill="none" stroke={color} strokeWidth="5" />
     </svg>
   );
 }

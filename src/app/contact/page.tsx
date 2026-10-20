@@ -5,14 +5,14 @@ import { company } from "@/data/company";
 import "@/styles/pages.css";
 
 export const metadata: Metadata = {
-  title: "문의",
+  title: "고객센터",
   description: "카카오톡 채널, 전화, 이메일로 항도제일특수브러쉬에 제작 문의를 남길 수 있습니다.",
 };
 
 export default function ContactPage() {
   return (
     <>
-      <PageHead eyebrow="Contact" title="문의하기">
+      <PageHead eyebrow="Customer Center" title="고객센터">
         <p className="lead">
           제작 문의는 카카오톡 채널로 가장 빠르게 받습니다. 무엇을 적어야 할지 모르시면 먼저 AI 개발 의뢰서로 내용을
           정리해 보내 주세요.
@@ -59,6 +59,13 @@ export default function ContactPage() {
                 <dd>{company.address}</dd>
               </div>
             </dl>
+          </article>
+          <article className="contact-card">
+            <h2 className="h3">찾아오시는 길</h2>
+            <p className="muted">{company.address}</p>
+            <a className="btn btn--secondary btn--lg" href={company.naverMap} target="_blank" rel="noopener noreferrer">
+              네이버지도에서 보기<span className="sr-only"> (새 창)</span>
+            </a>
           </article>
         </div>
       </section>

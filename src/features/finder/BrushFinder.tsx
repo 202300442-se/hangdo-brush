@@ -563,7 +563,7 @@ export function BrushFinder() {
                   <p className="notice__title">등록된 유사 적용 분야가 없습니다</p>
                   <p>
                     처음 보는 공정이어도 개발할 수 있습니다. 의뢰서를 그대로 보내 주시면 대표가 직접 검토합니다.{" "}
-                    <Link href="/applications/">적용 분야 전체 보기</Link>
+                    <Link href="/products/">브러쉬 종류별 적용 분야 보기</Link>
                   </p>
                 </div>
               )}

@@ -1,0 +1,128 @@
+/* ---------- Order hero (어두운 사진 위 조회 패널) ---------- */
+.order-hero {
+  position: relative;
+  padding-block: var(--space-9);
+  overflow: hidden;
+  background: var(--black);
+  color: var(--white);
+}
+.order-hero__bg,
+.order-hero__bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.order-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(10 12 10 / 0.9) 0%, rgb(10 12 10 / 0.78) 55%, rgb(10 12 10 / 0.6) 100%);
+}
+.order-hero__inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+}
+@media (min-width: 980px) {
+  .order-hero__inner {
+    grid-template-columns: 1fr minmax(380px, 460px);
+    align-items: start;
+  }
+}
+.order-hero__intro {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+}
+.order-hero__intro .lead {
+  color: rgb(255 255 255 / 0.8);
+}
+.order-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  padding: 6px 14px;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+.order-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-top: var(--space-4);
+}
+.order-features li {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  font-weight: var(--fw-semibold);
+}
+.order-features__circle {
+  display: grid;
+  place-items: center;
+  width: clamp(88px, 10vw, 128px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+
+/* 조회 패널 (흰색 카드) */
+.order-hero__panel {
+  padding: var(--space-6) var(--space-5);
+  background: var(--white);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+}
+.order-hero__panel :focus-visible {
+  outline-color: var(--color-focus);
+}
+.order-form {
+  display: grid;
+  gap: var(--space-4);
+}
+.order-form__field {
+  display: grid;
+  gap: var(--space-2);
+}
+.order-form__field label {
+  font-weight: var(--fw-bold);
+}
+.order-form__help {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+.order-form__submit {
+  width: 100%;
+}
+.order-demo {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+.order-demo summary {
+  cursor: pointer;
+  min-height: var(--tap-min);
+  display: flex;
+  align-items: center;
+}
+.order-demo ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.order-hero__panel .order {
+  gap: var(--space-4);
+}
+.order-hero__panel .order__empty {
+  padding: var(--space-5) var(--space-3);
+}
+.order-hero__panel .order-card {
+  padding: var(--space-4) 0 0;
+  border: 0;
+  border-top: var(--border-1);
+}
