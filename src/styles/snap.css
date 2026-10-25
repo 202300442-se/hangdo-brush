@@ -1,0 +1,165 @@
+/* =========================================================
+   홈 화면: 한 번 스크롤 = 화면 한 장 (goodplan.kr 같은 풀페이지 방식)
+   - 브라우저 기본 scroll-snap 사용 (라이브러리 없음, 키보드·스크린리더 이동 그대로 가능)
+   - 넓고 충분히 높은 화면에서만 켠다. 휴대폰은 일반 스크롤.
+   ========================================================= */
+
+/* 소재·기술 섹션: 위에 대형 문구 띠 + 아래 사진 본문 (모든 화면 공통) */
+.tech-band {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-block: 0;
+  min-height: 0;
+}
+.tech-band > .marquee {
+  flex: none;
+  position: relative;
+  z-index: 1;
+}
+.tech-band__body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(90vh, 760px);
+  padding-block: var(--space-9);
+  overflow: clip;
+}
+
+.tech-band__copy > .btn {
+  justify-self: start;
+}
+
+/* 섹션 점 내비게이션 */
+.section-dots {
+  display: none;
+}
+
+@media (min-width: 900px) and (min-height: 680px) {
+  html:has(.snap-page) {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 0;
+  }
+  .snap-page > .snap {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  html:has(.snap-page) .site-footer {
+    scroll-snap-align: end;
+  }
+
+  /* 각 섹션을 화면 한 장에 맞추고 내용은 가운데로 */
+  .snap-page > .panel,
+  .snap-page > .xl {
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + var(--space-5)) var(--space-7);
+  }
+  .snap-page > .xl > .xl__inner {
+    width: 100%;
+  }
+  .snap-page > .panel.inquiry {
+    align-items: center;
+    min-height: 100svh;
+    padding-top: calc(var(--header-h) + var(--space-5));
+  }
+  .snap-page > .panel.inquiry .container {
+    gap: var(--space-7);
+  }
+
+  /* 브러쉬 9종: 한 화면에 3×3으로 */
+  .snap-page > .products-band {
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + var(--space-4)) var(--space-6);
+  }
+  .snap-page > .products-band > .container {
+    width: 100%;
+  }
+  .snap-page > .products-band .band-head {
+    margin-bottom: var(--space-5);
+  }
+  .snap-page > .products-band .h1 {
+    font-size: clamp(1.8rem, 1rem + 2vw, 2.8rem);
+  }
+  .snap-page > .products-band .type-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: clamp(130px, calc((100svh - var(--header-h) - 260px) / 3), 250px);
+  }
+  .snap-page > .products-band .type-tile__link {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+  .snap-page > .products-band .type-tile__body {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  /* 소재·기술: 띠 + 본문이 정확히 한 화면 */
+  .snap-page > .tech-band {
+    height: 100svh;
+  }
+  .snap-page > .tech-band .tech-band__body {
+    min-height: 0;
+    align-items: center;
+    padding-block: var(--space-6);
+  }
+
+  /* 섹션 점 */
+  .section-dots {
+    display: block;
+    position: fixed;
+    right: clamp(14px, 2vw, 28px);
+    top: 50%;
+    z-index: 45;
+    transform: translateY(-50%);
+    mix-blend-mode: difference;
+  }
+  .section-dots ul {
+    display: grid;
+    gap: 4px;
+  }
+  .section-dots__link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-height: 28px;
+    color: #fff;
+    text-decoration: none;
+  }
+  .section-dots__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.3s ease;
+  }
+  .section-dots__link[aria-current="true"] .section-dots__dot {
+    background: #fff;
+    transform: scale(1.35);
+  }
+  .section-dots__label {
+    font-size: 0.75rem;
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(6px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .section-dots__link:hover .section-dots__label,
+  .section-dots__link:focus-visible .section-dots__label {
+    opacity: 1;
+    transform: none;
+  }
+  .section-dots__link:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+}

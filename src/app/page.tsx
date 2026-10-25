@@ -2,6 +2,8 @@ import Link from "next/link";
 import { HeroMedia } from "@/components/HeroMedia";
 import { CountUp } from "@/components/CountUp";
 import { MaterialChips } from "@/components/MaterialChips";
+import { SectionDots } from "@/components/SectionDots";
+import { FullPageScroll } from "@/components/FullPageScroll";
 import { SplitWords } from "@/components/SplitWords";
 import { Photo } from "@/components/Photo";
 import { brushTypes } from "@/data/brushTypes";
@@ -10,13 +12,28 @@ import { materials } from "@/data/materials";
 import "@/styles/glass.css";
 import "@/styles/home.css";
 import "@/styles/pages.css";
+import "@/styles/snap.css";
 
-// 홈 스크롤 순서: 배경 영상 → 회사소개 → 찾아오시는 길 → 제작문의 → 브러쉬·제품 → 소재·기술
+// 홈 스크롤 순서: 배경 영상 → 회사소개 → 찾아오시는 길 → 커스텀 엔지니어링 → 제작문의 → 브러쉬·제품 → 소재·기술
+// 넓은 화면에서는 한 번 스크롤할 때마다 화면 한 장씩 넘어간다 (snap.css + FullPageScroll)
+const SECTIONS = [
+  { id: "top", label: "처음" },
+  { id: "company", label: "회사소개" },
+  { id: "location", label: "찾아오시는 길" },
+  { id: "engineering", label: "커스텀 엔지니어링" },
+  { id: "inquiry", label: "제작문의" },
+  { id: "brushes", label: "브러쉬·제품" },
+  { id: "tech", label: "소재·기술" },
+];
+const SECTION_IDS = SECTIONS.map((s) => s.id);
+
 export default function Home() {
   return (
-    <>
+    <div className="snap-page">
+      <SectionDots items={SECTIONS} />
+      <FullPageScroll ids={SECTION_IDS} />
       {/* 01 HERO */}
-      <section className="hero on-dark" aria-labelledby="hero-title">
+      <section id="top" className="hero on-dark snap" aria-labelledby="hero-title">
         <HeroMedia />
         <div className="hero__shade" aria-hidden="true" />
         <div className="container hero__inner">
@@ -41,7 +58,7 @@ export default function Home() {
       </section>
 
       {/* 02 회사소개 */}
-      <section id="company" className="panel" aria-labelledby="company-title">
+      <section id="company" className="panel snap" aria-labelledby="company-title">
         <div className="container panel__split">
           <div className="panel__copy reveal">
             <p className="eyebrow">회사소개</p>
@@ -89,7 +106,7 @@ export default function Home() {
       </section>
 
       {/* 03 찾아오시는 길 */}
-      <section className="panel panel--dark on-dark" aria-labelledby="location-title">
+      <section id="location" className="panel panel--dark on-dark snap" aria-labelledby="location-title">
         <div className="panel__bg scroll-zoom-bg" aria-hidden="true">
           <Photo id="wire-spools" sizes="100vw" decorative />
         </div>
@@ -130,7 +147,7 @@ export default function Home() {
       </section>
 
       {/* 큰 영문 타이포 + 원형 버튼 (밝은 회색 · 흑백 사진) */}
-      <section className="xl" aria-labelledby="xl-title">
+      <section id="engineering" className="xl snap" aria-labelledby="xl-title">
         <span className="xl__circle" aria-hidden="true" />
         <span className="xl__orb" aria-hidden="true">
           <Photo id="roll-knot-wire-top" sizes="(min-width: 880px) 40vw, 80vw" decorative />
@@ -156,7 +173,7 @@ export default function Home() {
       </section>
 
       {/* 04 제작문의 — 하단에 두 가지 선택지 */}
-      <section className="panel inquiry" aria-labelledby="inquiry-title">
+      <section id="inquiry" className="panel inquiry snap" aria-labelledby="inquiry-title">
         <div className="container">
           <div className="inquiry__head reveal">
             <p className="eyebrow">제작문의</p>
@@ -191,7 +208,7 @@ export default function Home() {
       </section>
 
       {/* 05 브러쉬·제품 */}
-      <section className="section section--dark on-dark products-band" aria-labelledby="types-title">
+      <section id="brushes" className="section section--dark on-dark products-band snap" aria-labelledby="types-title">
         <div className="container">
           <div className="band-head reveal">
             <p className="eyebrow">브러쉬·제품</p>
@@ -222,21 +239,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 스크롤에 따라 흐르는 대형 문구 (장식) */}
-      <div className="marquee" aria-hidden="true" translate="no">
-        <div className="marquee__track">
-          <span>BRUSH SOLUTION COMPANY</span>
-          <span className="marquee__dot">●</span>
-          <span>SINCE 1995</span>
-          <span className="marquee__dot">●</span>
-          <span>MADE IN BUSAN, KOREA</span>
-          <span className="marquee__dot">●</span>
-          <span>BRUSH SOLUTION COMPANY</span>
-        </div>
-      </div>
-
       {/* 06 소재·기술 */}
-      <section className="tech-band on-dark" aria-labelledby="tech-title">
+      <section id="tech" className="tech-band on-dark snap" aria-labelledby="tech-title">
+        <div className="marquee" aria-hidden="true" translate="no">
+          <div className="marquee__track">
+            <span>BRUSH SOLUTION COMPANY</span>
+            <span className="marquee__dot">●</span>
+            <span>SINCE 1995</span>
+            <span className="marquee__dot">●</span>
+            <span>MADE IN BUSAN, KOREA</span>
+            <span className="marquee__dot">●</span>
+            <span>BRUSH SOLUTION COMPANY</span>
+          </div>
+        </div>
+        <div className="tech-band__body">
         <div className="tech-band__media scroll-zoom-bg" aria-hidden="true">
           <Photo id="machine-knot-wheel" sizes="100vw" decorative />
         </div>
@@ -250,7 +266,8 @@ export default function Home() {
             소재·기술 자세히 보기
           </Link>
         </div>
+        </div>
       </section>
-    </>
+    </div>
   );
 }
