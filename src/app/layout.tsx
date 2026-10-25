@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { FloatingCta } from "@/components/FloatingCta";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { Interactions } from "@/components/Interactions";
 import { RevealObserver } from "@/components/Reveal";
 import { company } from "@/data/company";
 import "@/styles/globals.css";
 import "@/styles/layout.css";
 import "@/styles/motion.css";
+import "@/styles/interactions.css";
 
 export const metadata: Metadata = {
   title: {
@@ -49,7 +52,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <FloatingCta />
         <RevealObserver />
+        <Interactions />
       </body>
     </html>
   );

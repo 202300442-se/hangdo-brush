@@ -10,7 +10,7 @@ export default function NotFound() {
           홈으로
         </Link>
         <Link href="/finder/" className="btn btn--secondary">
-          AI 개발 의뢰
+          AI 제작상담
         </Link>
       </div>
     </PageHead>

@@ -58,6 +58,7 @@ export function BrushFinder() {
   const [brief, setBrief] = useState<DevBrief | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [copyState, setCopyState] = useState<CopyState>("idle");
+  const [justCopied, setJustCopied] = useState(false);
   const [announce, setAnnounce] = useState("");
 
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -147,6 +148,10 @@ export function BrushFinder() {
   const onCopy = async () => {
     const ok = await copyText(summary);
     setCopyState(ok ? "copied" : "failed");
+    if (ok) {
+      setJustCopied(true);
+      window.setTimeout(() => setJustCopied(false), 2400);
+    }
     setAnnounce(ok ? "의뢰서가 복사되었습니다." : "자동 복사에 실패했습니다. 의뢰서 상자를 직접 선택해 복사해 주세요.");
     if (!ok) summaryRef.current?.select();
   };
@@ -169,6 +174,9 @@ export function BrushFinder() {
             next();
           }}
         >
+          <div className="stepper-progress" aria-hidden="true">
+            <div className="stepper-progress__bar" style={{ ["--p" as string]: (step + 1) / STEPS.length }} />
+          </div>
           <ol className="stepper" role="list" aria-label="의뢰서 작성 단계">
             {STEPS.map((s, i) => (
               <li
@@ -597,8 +605,21 @@ export function BrushFinder() {
             )}
 
             <div className="btn-row finder__actions">
-              <button type="button" className="btn btn--primary btn--lg" onClick={() => void onCopy()}>
-                의뢰서 복사
+              <button
+                type="button"
+                className={`btn btn--primary btn--lg${justCopied ? " is-done" : ""}`}
+                onClick={() => void onCopy()}
+              >
+                {justCopied ? (
+                  <>
+                    <svg className="btn__check" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                      <path d="M4.5 10.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    복사됨
+                  </>
+                ) : (
+                  "의뢰서 복사"
+                )}
               </button>
               <a className="btn btn--kakao btn--lg" href={company.kakaoChat} target="_blank" rel="noopener noreferrer">
                 카카오톡으로 보내기<span className="sr-only"> (새 창)</span>
