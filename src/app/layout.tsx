@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${company.nameKo}`,
   },
   description:
-    "항도제일특수브러쉬(Hangdo Jeil Special Brush)는 1995년부터 부산에서 시중 브러쉬로 해결되지 않는 산업 공정을 위해 맞춤형 브러쉬를 개발·제작합니다. 철도 차량·버스·신발·수산물·농산물 세척, 철강 표면 세척과 물기 제거, 연마용 브러쉬.",
+    "항도제일특수브러쉬(Hangdo Jeil Special Brush)는 1992년부터 부산에서 시중 브러쉬로 해결되지 않는 산업 공정을 위해 맞춤형 브러쉬를 개발·제작합니다. 철도 차량·버스·신발·수산물·농산물 세척, 철강 표면 세척과 물기 제거, 연마용 브러쉬.",
   applicationName: company.nameKo,
   openGraph: {
     type: "website",

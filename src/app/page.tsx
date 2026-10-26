@@ -245,7 +245,7 @@ export default function Home() {
           <div className="marquee__track">
             <span>BRUSH SOLUTION COMPANY</span>
             <span className="marquee__dot">●</span>
-            <span>SINCE 1995</span>
+            <span>SINCE {company.founded}</span>
             <span className="marquee__dot">●</span>
             <span>MADE IN BUSAN, KOREA</span>
             <span className="marquee__dot">●</span>

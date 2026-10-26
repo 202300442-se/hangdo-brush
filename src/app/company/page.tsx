@@ -8,7 +8,7 @@ import "@/styles/pages.css";
 
 export const metadata: Metadata = {
   title: "회사소개",
-  description: "1995년 부산에서 시작한 산업용 브러쉬 주문제작 기업 항도제일특수브러쉬의 인사말, 연혁, 오시는 길.",
+  description: "1992년 부산에서 시작한 산업용 브러쉬 주문제작 기업 항도제일특수브러쉬의 인사말, 연혁, 오시는 길.",
 };
 
 export default function CompanyPage() {
